@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import {
   Text,
   TouchableOpacity,
@@ -6,24 +6,45 @@ import {
   ImageBackground
 } from "react-native";
 import LandingPhoto from "../../assets/Talkify-HomeScreen-V1.png";
+import firebase from "../../firebase";
 
 const Landing = ({ navigation }) => {
+  useEffect(
+    () => {
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          navigation.navigate("Home");
+          console.log(user);
+        } else {
+          return;
+        }
+      });
+    },
+    //eslint-disable-next-line
+    []
+  );
   return (
     <ImageBackground source={LandingPhoto} style={styles.wrapper}>
       <TouchableOpacity
-        style={styles.button}
+        style={styles.buttonLog}
         underlayColor="#fff"
         onPress={() => navigation.navigate("Login")}
       >
-        <Text style={styles.buttonText}>Login</Text>
+        <Text style={styles.buttonTextLog}>Login</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigate("HomeScreen")}
+        style={styles.buttonReg}
         underlayColor="#fff"
         onPress={() => navigation.navigate("Register")}
       >
-        <Text style={styles.buttonText}>Register</Text>
+        <Text style={styles.buttonTextReg}>Register</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.buttonReg}
+        underlayColor="#fff"
+        onPress={() => navigation.navigate("Home")}
+      >
+        <Text style={styles.buttonTextReg}>Home</Text>
       </TouchableOpacity>
     </ImageBackground>
   );
@@ -37,7 +58,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center"
   },
-  button: {
+  buttonLog: {
     padding: 15,
     backgroundColor: "rgba(0,0,0,0)",
     borderRadius: 10,
@@ -48,7 +69,26 @@ const styles = StyleSheet.create({
     position: "relative",
     top: 50
   },
-  buttonText: {
+  buttonReg: {
+    padding: 15,
+    backgroundColor: "white",
+    borderRadius: 10,
+    borderWidth: 3,
+    borderColor: "#fff",
+    marginTop: 40,
+    width: 200,
+    position: "relative",
+    top: 70,
+    elevation: 5
+  },
+  buttonTextReg: {
+    color: "#00d1b2",
+    textAlign: "center",
+    paddingHorizontal: 40,
+    fontSize: 20,
+    fontWeight: "bold"
+  },
+  buttonTextLog: {
     color: "#fff",
     textAlign: "center",
     paddingHorizontal: 40,
