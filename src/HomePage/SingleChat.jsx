@@ -7,20 +7,49 @@ import {
   TouchableOpacity,
   ScrollView,
   StyleSheet,
-  Dimensions
+  Dimensions,
+  KeyboardAvoidingView,
+  Platform,
+  FlatList
 } from "react-native";
 import firebase from "../../firebase";
+import { Icon } from "react-native-elements";
+import Spinner from "react-native-loading-spinner-overlay";
 
 const SingleChat = props => {
   const [messages, setMessages] = useState([]);
   const currentUser = firebase.auth().currentUser;
   const [message, setMessage] = useState("");
   const inputEl = useRef(null);
-  const handleMessage = e => {
-    setMessage(e.target.value);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const updateLastMessage = () => {
+    try {
+      firebase
+        .firestore()
+        .collection("messages")
+        .doc(props.target)
+        .collection("senders")
+        .doc(currentUser.displayName)
+        .update({
+          message: message
+        });
+      firebase
+        .firestore()
+        .collection("messages")
+        .doc(currentUser.displayName)
+        .collection("senders")
+        .doc(props.target)
+        .update({
+          message: message
+        });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const sendMessage = async e => {
+    const id = Math.random() * 500;
     const time = new Date().toLocaleString();
     if (message.trim().length > 0) {
       try {
@@ -35,7 +64,8 @@ const SingleChat = props => {
             senderName: currentUser.displayName,
             senderPhoto: currentUser.photoURL,
             text: message,
-            timestamp: time
+            timestamp: time,
+            id: id
           })
           .then(
             firebase
@@ -49,11 +79,12 @@ const SingleChat = props => {
                 senderName: currentUser.displayName,
                 senderPhoto: currentUser.photoURL,
                 text: message,
-                timestamp: time
+                timestamp: time,
+                id: id
               })
           )
           .then(setMessage(""));
-        inputEl.current.scrollToEnd();
+        updateLastMessage();
       } catch (err) {
         console.log(err);
       }
@@ -78,7 +109,9 @@ const SingleChat = props => {
             setMessages(oldArr => [...oldArr, doc.data()]);
           });
         });
-      await inputEl.current.scrollToEnd();
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
     } catch (err) {
       console.log(err);
     }
@@ -93,67 +126,85 @@ const SingleChat = props => {
   );
 
   return (
-    <View style={styles.mainWrapper}>
-      <View>
-        <ScrollView ref={inputEl}>
-          <View style={{ flexDirection: "column-reverse" }}>
-            {messages.length > 0
-              ? messages.map((message, index) => {
-                  return (
-                    <View key={index}>
-                      <View style={styles.senderWrapper}>
-                        <View>
-                          <Image
-                            source={{ uri: message.senderPhoto }}
-                            style={styles.avatar}
-                          />
-                        </View>
-                        <View style={styles.senderInfo}>
-                          <Text style={styles.senderName}>
-                            {message.senderName}
-                          </Text>
-                          <Text style={styles.timestamp}>
-                            {message.timestamp}
-                          </Text>
-                        </View>
-                      </View>
-                      <View>
-                        {message.senderName === currentUser.displayName ? (
-                          <View style={styles.sender}>
-                            <Text>{message.text}</Text>
-                          </View>
-                        ) : (
-                          <View style={styles.receiver}>
-                            <Text>{message.text}</Text>
-                          </View>
-                        )}
-                      </View>
+    <KeyboardAvoidingView
+      behavior="height"
+      enabled
+      keyboardVerticalOffset={Platform.select({ ios: 60, android: 120 })}
+    >
+      <View style={styles.mainWrapper}>
+        <View>
+          <Spinner
+            visible={isLoading}
+            textContent={"Loading..."}
+            textStyle={styles.spinnerTextStyle}
+          />
+          <FlatList
+            ref={inputEl}
+            data={messages}
+            inverted
+            keyExtractor={item => item.id}
+            renderItem={({ item }) =>
+              messages.length > 0 ? (
+                <View
+                  key={item.id}
+                  style={
+                    item.senderName === currentUser.displayName
+                      ? styles.senderPosition
+                      : styles.receiverPosition
+                  }
+                >
+                  <View style={styles.senderWrapper}>
+                    <View>
+                      <Image
+                        source={{ uri: item.senderPhoto }}
+                        style={styles.avatar}
+                      />
                     </View>
-                  );
-                })
-              : null}
-          </View>
-        </ScrollView>
-        <View style={styles.sendingWrapper}>
-          <View>
-            <TextInput
-              value={message}
-              onChangeText={text => setMessage(text)}
-              style={styles.input}
-            />
-          </View>
-          <View style={styles.buttonWrapper}>
-            <TouchableOpacity
-              style={styles.buttonReg}
-              underlayColor="#fff"
-              onPress={sendMessage}
-            >
-              <Text style={styles.buttonTextReg}>Send</Text>
-            </TouchableOpacity>
+                    <View style={styles.senderInfo}>
+                      <Text style={styles.senderName}>{item.senderName}</Text>
+                      <Text style={styles.timestamp}>{item.timestamp}</Text>
+                    </View>
+                  </View>
+                  <View>
+                    {item.senderName === currentUser.displayName ? (
+                      <View style={styles.sender}>
+                        <Text>{item.text}</Text>
+                      </View>
+                    ) : (
+                      <View style={styles.receiver}>
+                        <Text>{item.text}</Text>
+                      </View>
+                    )}
+                  </View>
+                </View>
+              ) : null
+            }
+          ></FlatList>
+
+          <View style={styles.sendingWrapper}>
+            <View>
+              <TextInput
+                value={message}
+                onChangeText={text => setMessage(text)}
+                style={styles.input}
+              />
+            </View>
+            <View style={styles.buttonWrapper}>
+              <TouchableOpacity
+                style={styles.iconWrapper}
+                onPress={sendMessage}
+              >
+                <Icon
+                  name="send"
+                  type="material"
+                  iconStyle={{ fontSize: 30, color: "#fff", padding: 2 }}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -177,13 +228,13 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   input: {
-    width: Dimensions.get("window").width * 0.8,
+    width: Dimensions.get("window").width * 0.75,
     borderColor: "rgba(0,0,0,0.3)",
     borderWidth: 1,
-    borderRadius: 15,
+    borderRadius: 55,
     padding: 10,
     margin: 5,
-    height: 60
+    height: 50
   },
   buttonWrapper: {
     justifyContent: "center",
@@ -192,9 +243,9 @@ const styles = StyleSheet.create({
   buttonTextReg: {
     color: "#00d1b2",
     textAlign: "center",
-    padding: 10,
     fontSize: 20,
-    fontWeight: "bold"
+    fontWeight: "bold",
+    padding: 10
   },
   avatar: {
     width: 40,
@@ -208,7 +259,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#dbf4fd",
     padding: 10,
     borderRadius: 15,
-    flexWrap: "wrap"
+    alignSelf: "flex-start",
+    maxWidth: 350
+  },
+  senderPosition: {
+    alignItems: "flex-start"
+  },
+  receiver: {
+    backgroundColor: "rgba(0,0,0,0.04)",
+    padding: 10,
+    borderRadius: 15,
+    alignSelf: "flex-start",
+    maxWidth: 350
   },
   senderInfo: {
     marginLeft: 10
@@ -216,6 +278,15 @@ const styles = StyleSheet.create({
   timestamp: {
     fontSize: 12,
     color: "grey"
+  },
+  iconWrapper: {
+    backgroundColor: "#00d1b2",
+    padding: 10,
+    borderRadius: 50,
+    marginLeft: 5
+  },
+  spinnerTextStyle: {
+    color: "white"
   }
 });
 export default SingleChat;

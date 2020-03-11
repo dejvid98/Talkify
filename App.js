@@ -22,6 +22,7 @@ if (!global.btoa) {
 if (!global.atob) {
   global.atob = decode;
 }
+
 const BottomNavigation = createMaterialBottomTabNavigator();
 
 const BottomNav = () => {

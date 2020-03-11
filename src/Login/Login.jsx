@@ -20,7 +20,6 @@ const Login = ({ navigation }) => {
     firebase.auth().onAuthStateChanged(function(user) {
       if (user) {
         navigation.navigate("Home");
-        console.log(user);
       } else {
         return;
       }

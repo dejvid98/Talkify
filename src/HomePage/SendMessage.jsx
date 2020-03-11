@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { AppContext } from "../../Context";
 
-const Home = () => {
+const SendMessage = () => {
   const [message, setMessage] = useState("");
   const [receiver, setReceiver] = useState("");
   const { newMessageContext } = useContext(AppContext);
@@ -55,7 +55,8 @@ const Home = () => {
           senderName: currentUser.displayName,
           senderPhoto: currentUser.photoURL,
           receiver: receiver,
-          receiverPhoto
+          receiverPhoto,
+          message: message
         });
 
       await firebase
@@ -68,7 +69,8 @@ const Home = () => {
           senderName: currentUser.displayName,
           senderPhoto: currentUser.photoURL,
           receiver: receiver,
-          receiverPhoto
+          receiverPhoto,
+          message: message
         });
 
       await firebase
@@ -210,4 +212,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Home;
+export default SendMessage;

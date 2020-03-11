@@ -5,7 +5,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import * as ImagePicker from "expo-image-picker";
 import firebase from "../../firebase";
 
-const Home = () => {
+const Profile = () => {
   const currentUser = firebase.auth().currentUser;
   const [photoState, setPhotoState] = useState(currentUser.photoURL);
   const storage = firebase.storage();
@@ -153,4 +153,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Home;
+export default Profile;
