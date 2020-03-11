@@ -40,7 +40,15 @@ const Home = () => {
       }, 1000);
     } catch (err) {
       console.log(err);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
     }
+  };
+
+  const handleSend = () => {
+    setIsSending(false);
+    setIsChatting(false);
   };
 
   const openChat = target => {
@@ -66,11 +74,14 @@ const Home = () => {
     <View style={styles.wrapper}>
       <View style={styles.title}>
         <View style={{ flex: 3 }}>
-          {isChatting ? (
+          {isChatting || isSending ? (
             <Icon
               name="arrow-left"
               type="font-awesome"
-              onPress={() => setIsChatting(false)}
+              onPress={() => {
+                setIsSending(false);
+                setIsChatting(false);
+              }}
               containerStyle={styles.icon}
               iconStyle={{ fontSize: 35, color: "white" }}
             />
@@ -82,92 +93,136 @@ const Home = () => {
           <Text style={styles.titleText}>Messages</Text>
         </View>
       </View>
-      {isSending ? <SendMessage /> : null}
-      <View style={styles.chatWrapper}>
-        {isChatting ? (
-          <SingleChat target={target} />
-        ) : isLoading ? (
-          <Spinner
-            visible={isLoading}
-            textContent={"Loading..."}
-            textStyle={styles.spinnerTextStyle}
-          />
-        ) : senders.length > 0 ? (
-          senders.map((sender, index) => {
-            const senderName = sender.senderName;
-            const receiverName = sender.receiver;
-            const senderCapitalized =
-              senderName.charAt(0).toUpperCase() + senderName.substring(1);
-            const receiverCapitalized =
-              receiverName.charAt(0).toUpperCase() + receiverName.substring(1);
-            return (
-              <View>
-                <TouchableOpacity
-                  style={styles.messageWrapper}
-                  key={index}
-                  onPress={() =>
-                    sender.senderName === currentUser.displayName
-                      ? openChat(sender.receiver)
-                      : openChat(sender.senderName)
-                  }
-                >
-                  <View style={styles.avatarWrapper}>
-                    {sender.senderPhoto === currentUser.photoURL ? (
-                      <Image
-                        source={{ uri: sender.receiverPhoto }}
-                        style={styles.senderAvatar}
-                      />
-                    ) : (
-                      <Image
-                        source={{ uri: sender.senderPhoto }}
-                        style={styles.senderAvatar}
-                      />
-                    )}
-                  </View>
-
-                  <View style={styles.senderWrapper}>
-                    {sender.senderName === currentUser.displayName ? (
-                      <Text style={styles.sender}>{receiverCapitalized}</Text>
-                    ) : (
-                      <Text style={styles.sender}>{senderCapitalized}</Text>
-                    )}
-                    <View style={{ flexDirection: "row", marginTop: 5 }}>
-                      <Icon
-                        name="check"
-                        type="material"
-                        iconStyle={{
-                          color: "black",
-                          fontSize: 16,
-                          padding: 2
-                        }}
-                      />
-                      <Text style={{ color: "#787878", fontSize: 16 }}>
-                        {sender.message}
-                      </Text>
+      {isSending ? (
+        <SendMessage handleSend={handleSend} />
+      ) : (
+        <View style={styles.chatWrapper}>
+          {isChatting ? (
+            <SingleChat target={target} />
+          ) : isLoading ? (
+            <Spinner
+              visible={isLoading}
+              textContent={"Loading..."}
+              textStyle={styles.spinnerTextStyle}
+            />
+          ) : senders.length > 0 ? (
+            senders.map((sender, index) => {
+              const senderName = sender.senderName;
+              const receiverName = sender.receiver;
+              const senderCapitalized =
+                senderName.charAt(0).toUpperCase() + senderName.substring(1);
+              const receiverCapitalized =
+                receiverName.charAt(0).toUpperCase() +
+                receiverName.substring(1);
+              return (
+                <View key={index}>
+                  <TouchableOpacity
+                    style={styles.messageWrapper}
+                    onPress={() =>
+                      sender.senderName === currentUser.displayName
+                        ? openChat(sender.receiver)
+                        : openChat(sender.senderName)
+                    }
+                  >
+                    <View style={styles.avatarWrapper}>
+                      {sender.senderPhoto === currentUser.photoURL ? (
+                        <Image
+                          source={{ uri: sender.receiverPhoto }}
+                          style={styles.senderAvatar}
+                        />
+                      ) : (
+                        <Image
+                          source={{ uri: sender.senderPhoto }}
+                          style={styles.senderAvatar}
+                        />
+                      )}
                     </View>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            );
-          })
-        ) : (
-          <View>
-            <Text>You don't have any messages</Text>
-          </View>
-        )}
-        {isChatting ? null : (
-          <View style={styles.chatIcon}>
-            <TouchableOpacity style={styles.iconWrapper}>
-              <Icon
-                name="send"
-                type="material"
-                onPress={() => setIsChatting(false)}
-                iconStyle={{ fontSize: 55, color: "#02c76b", padding: 2 }}
-              />
-            </TouchableOpacity>
-          </View>
-        )}
-      </View>
+
+                    <View style={styles.senderWrapper}>
+                      {sender.senderName === currentUser.displayName ? (
+                        <View style={{ flexDirection: "row" }}>
+                          <View>
+                            <Text style={styles.sender}>
+                              {receiverCapitalized}
+                            </Text>
+                          </View>
+                          <View
+                            style={{
+                              alignItems: "flex-end",
+                              flex: 1,
+                              right: 30
+                            }}
+                          >
+                            <Text style={{ fontSize: 16, marginTop: 10 }}>
+                              {sender.timestamp.substring(11, 20)}
+                            </Text>
+                          </View>
+                        </View>
+                      ) : (
+                        <View style={{ flexDirection: "row", flex: 1 }}>
+                          <View>
+                            <Text style={styles.sender}>
+                              {senderCapitalized}
+                            </Text>
+                          </View>
+                          <View
+                            style={{
+                              alignItems: "flex-end",
+                              flex: 1,
+                              right: 30
+                            }}
+                          >
+                            <Text style={{ fontSize: 16, marginTop: 10 }}>
+                              {sender.timestamp.substring(11, 20)}
+                            </Text>
+                          </View>
+                        </View>
+                      )}
+                      <View style={{ flexDirection: "row", marginTop: 5 }}>
+                        <Icon
+                          name="check"
+                          type="material"
+                          iconStyle={{
+                            color: "black",
+                            fontSize: 16,
+                            padding: 2
+                          }}
+                        />
+                        <Text style={{ color: "#787878", fontSize: 16 }}>
+                          {sender.message}
+                        </Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              );
+            })
+          ) : (
+            <View style={styles.emptyInboxWrapper}>
+              <Text style={styles.emptyInbox}>
+                Your inbox is currently empty
+              </Text>
+            </View>
+          )}
+
+          {isChatting ? null : (
+            <View style={styles.chatIcon}>
+              <TouchableOpacity
+                onPress={() => {
+                  setIsSending(true);
+                }}
+                style={styles.iconWrapper}
+              >
+                <Icon
+                  name="send"
+                  type="material"
+                  iconStyle={{ fontSize: 30, color: "white", padding: 2 }}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+      )}
     </View>
   );
 };
@@ -176,14 +231,14 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     justifyContent: "flex-start",
-    backgroundColor: "#e4f9f5"
+    backgroundColor: "#fff"
   },
   title: {
     flex: 1,
     maxHeight: 120,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#1ac475",
+    backgroundColor: "#128c7e",
     flexDirection: "row"
   },
   titleText: {
@@ -221,11 +276,13 @@ const styles = StyleSheet.create({
   senderWrapper: {
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    left: 20
+    left: 20,
+    flex: 1
   },
   sender: {
     fontSize: 27,
-    top: 5
+    top: 5,
+    flex: 1
   },
   icon: {
     backgroundColor: "rgba(0,0,0,0)",
@@ -238,12 +295,22 @@ const styles = StyleSheet.create({
     margin: 20
   },
   iconWrapper: {
-    backgroundColor: "white",
+    backgroundColor: "#25d366",
     padding: 20,
     borderRadius: 60
   },
   spinnerTextStyle: {
     color: "#FFF"
+  },
+  emptyInboxWrapper: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    top: 120
+  },
+  emptyInbox: {
+    fontSize: 23,
+    color: "rgba(0,0,0,0.4)"
   }
 });
 

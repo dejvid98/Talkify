@@ -38,13 +38,6 @@ const Landing = ({ navigation }) => {
       >
         <Text style={styles.buttonTextReg}>Register</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.buttonReg}
-        underlayColor="#fff"
-        onPress={() => navigation.navigate("Home")}
-      >
-        <Text style={styles.buttonTextReg}>Home</Text>
-      </TouchableOpacity>
     </ImageBackground>
   );
 };

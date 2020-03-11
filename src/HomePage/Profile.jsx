@@ -4,8 +4,9 @@ import { Button } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as ImagePicker from "expo-image-picker";
 import firebase from "../../firebase";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
-const Profile = () => {
+const Profile = ({ navigation }) => {
   const currentUser = firebase.auth().currentUser;
   const [photoState, setPhotoState] = useState(currentUser.photoURL);
   const storage = firebase.storage();
@@ -34,7 +35,7 @@ const Profile = () => {
     try {
       const storageRef = await firebase
         .storage()
-        .ref("avatars/" + currentUser.displayName);
+        .ref("avatars/" + currentUser.displayName.toLowerCase());
       const imageBlob = await uriToBlob(photo);
       await storageRef.put(imageBlob);
     } catch (error) {
@@ -45,7 +46,7 @@ const Profile = () => {
   const getPhotoURL = async () => {
     try {
       await storageRef
-        .child("avatars/" + currentUser.displayName)
+        .child("avatars/" + currentUser.displayName.toLowerCase())
         .getDownloadURL()
         .then(function(url) {
           setPhotoState(url);
@@ -57,9 +58,20 @@ const Profile = () => {
   };
 
   const openGallery = async () => {
-    const pic = await ImagePicker.launchImageLibraryAsync();
-    setPhotoState(pic.uri);
-    uploadPhoto(pic.uri);
+    try {
+      const pic = await ImagePicker.launchImageLibraryAsync();
+      if (pic.uri) {
+        setPhotoState(pic.uri);
+        uploadPhoto(pic.uri);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleLogout = () => {
+    firebase.auth().signOut();
+    navigation.navigate("Landing");
   };
 
   useEffect(() => {
@@ -89,6 +101,16 @@ const Profile = () => {
             }
             onPress={openGallery}
           />
+          <TouchableOpacity style={styles.logOutWrapper} onPress={handleLogout}>
+            <Text
+              style={{
+                fontSize: 22,
+                color: "white"
+              }}
+            >
+              Logout
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -105,17 +127,17 @@ const styles = StyleSheet.create({
     maxHeight: 120,
     justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: "#30e3ca"
+    backgroundColor: "#128c7e"
   },
   titleText: {
     position: "relative",
-    marginTop: 65,
+    marginTop: 70,
     fontSize: 30,
     color: "#fff",
     fontWeight: "bold"
   },
   mainWindow: {
-    backgroundColor: "#e4f9f5",
+    backgroundColor: "#fff",
     flex: 1,
     position: "absolute",
     alignItems: "center",
@@ -142,7 +164,7 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 40,
-    backgroundColor: "#54b0ff",
+    backgroundColor: "#34b7f1",
     paddingHorizontal: 30,
     marginTop: 40,
     elevation: 5
@@ -150,6 +172,16 @@ const styles = StyleSheet.create({
   lottie: {
     width: 100,
     height: 100
+  },
+  logOutWrapper: {
+    borderRadius: 50,
+    padding: 10,
+    width: 235,
+    marginTop: 15,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5,
+    backgroundColor: "#ff5252"
   }
 });
 

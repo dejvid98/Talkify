@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Text, StyleSheet, ImageBackground, View } from "react-native";
 import LandingPhoto from "../../assets/Talkify-HomeScreen-V1.png";
 import { Input, Button } from "react-native-elements";
@@ -14,6 +14,20 @@ const Landing = ({ navigation }) => {
   const [isUserNameError, setIsUserNameSerror] = useState(false);
   const [isEmailError, setIsEmailError] = useState(false);
   const [isPasswordError, setIsPasswordError] = useState(false);
+
+  useEffect(() => {
+    try {
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          navigation.navigate("Home");
+        } else {
+          return;
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   const handleErrors = () => {
     if (isEmpty(userName)) {
@@ -42,11 +56,6 @@ const Landing = ({ navigation }) => {
       }, 3000);
       return;
     }
-    clearTimeout(time1);
-    clearTimeout(time2);
-    clearTimeout(time3);
-
-    return;
   };
 
   const register = async () => {
@@ -72,7 +81,11 @@ const Landing = ({ navigation }) => {
           photoURL:
             "https://pngimage.net/wp-content/uploads/2018/06/no-avatar-png-8.png"
         })
-        .then(navigation.navigate("Home"));
+        .then(
+          firebase
+            .auth()
+            .signInWithEmailAndPassword(email.toLocaleLowerCase(), password)
+        );
     } catch (error) {
       console.log(error);
     }

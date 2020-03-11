@@ -5,25 +5,25 @@ import { Input, Button } from "react-native-elements";
 import isEmail from "validator/lib/isEmail";
 import isEmpty from "validator/lib/isEmpty";
 import firebase from "../../firebase";
-import { AppContext } from "../../Context";
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isEmailError, setIsEmailError] = useState(false);
   const [isPasswordError, setIsPasswordError] = useState(false);
-  const { isLoggedInContext } = useContext(AppContext);
-  //eslint-disable-next-line
-  const [isLoggedIn, setIsLoggedIn] = isLoggedInContext;
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (user) {
-        navigation.navigate("Home");
-      } else {
-        return;
-      }
-    });
+    try {
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          navigation.navigate("Home");
+        } else {
+          return;
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }, []);
 
   const handleErrors = () => {
@@ -42,19 +42,14 @@ const Login = ({ navigation }) => {
       }, 3000);
       return;
     }
-    clearTimeout(time1);
-    clearTimeout(time2);
-    return;
   };
 
   const login = async () => {
+    handleErrors();
     try {
-      handleErrors();
       await firebase
         .auth()
-        .signInWithEmailAndPassword(email, password)
-        .then(setIsLoggedIn(true))
-        .then(navigation.replace("Home"));
+        .signInWithEmailAndPassword(email.toLocaleLowerCase(), password);
     } catch (error) {
       console.log(error);
     }

@@ -24,6 +24,8 @@ const SingleChat = props => {
   const [isLoading, setIsLoading] = useState(true);
 
   const updateLastMessage = () => {
+    const time = new Date().toLocaleString();
+
     try {
       firebase
         .firestore()
@@ -32,7 +34,8 @@ const SingleChat = props => {
         .collection("senders")
         .doc(currentUser.displayName)
         .update({
-          message: message
+          message: message,
+          timestamp: time
         });
       firebase
         .firestore()
@@ -41,7 +44,8 @@ const SingleChat = props => {
         .collection("senders")
         .doc(props.target)
         .update({
-          message: message
+          message: message,
+          timestamp: time
         });
     } catch (error) {
       console.log(error);
@@ -111,9 +115,10 @@ const SingleChat = props => {
         });
       setTimeout(() => {
         setIsLoading(false);
-      }, 1000);
+      }, 500);
     } catch (err) {
       console.log(err);
+      setIsLoading(false);
     }
   };
 

@@ -8,13 +8,24 @@ import {
   TouchableOpacity
 } from "react-native";
 import { AppContext } from "../../Context";
+import Spinner from "react-native-loading-spinner-overlay";
 
-const SendMessage = () => {
+const SendMessage = props => {
   const [message, setMessage] = useState("");
   const [receiver, setReceiver] = useState("");
   const { newMessageContext } = useContext(AppContext);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
   //eslint-disable-next-line
   const [newMessage, setNewMessage] = newMessageContext;
+
+  const handleError = () => {
+    setIsError(true);
+
+    setTimeout(() => {
+      setIsError(false);
+    }, 3000);
+  };
 
   const sendMessage = async () => {
     const time = new Date().toLocaleString();
@@ -22,24 +33,48 @@ const SendMessage = () => {
     const storage = firebase.storage();
     const storageRef = storage.ref();
     let receiverPhoto = "";
+    if (message.length < 1 || receiver.length < 1) {
+      return;
+    }
+    setIsLoading(true);
+    const recRef = firebase
+      .firestore()
+      .collection("users")
+      .doc(receiver);
+
+    recRef
+      .get()
+      .then(function(doc) {
+        if (!doc.exists) {
+          handleError();
+          return;
+        }
+      })
+      .catch(function(error) {
+        console.log("Error getting document:", error);
+      });
 
     // Looks for a photo in DB, if not found, sets a default one
     try {
       await storageRef
-        .child("avatars/" + receiver)
+        .child("avatars/" + receiver.toLowerCase().trim())
         .getDownloadURL()
         .then(function(url) {
           receiverPhoto = url;
         });
     } catch (error) {
-      await firebase
-        .firestore()
-        .collection("users")
-        .doc(receiver)
-        .get()
-        .then(doc => {
-          receiverPhoto = doc.data().photoURL;
-        });
+      try {
+        await firebase
+          .firestore()
+          .collection("users")
+          .doc(receiver.toLowerCase().trim())
+          .get()
+          .then(doc => {
+            receiverPhoto = doc.data().photoURL;
+          });
+      } catch (err) {
+        return;
+      }
     }
 
     // Looks for a user in DB, reterives his info and sets it as metadata in message
@@ -48,15 +83,16 @@ const SendMessage = () => {
       await firebase
         .firestore()
         .collection("messages")
-        .doc(receiver)
+        .doc(receiver.toLowerCase().trim())
         .collection("senders")
         .doc(currentUser.displayName)
         .set({
           senderName: currentUser.displayName,
           senderPhoto: currentUser.photoURL,
-          receiver: receiver,
+          receiver: receiver.toLowerCase().trim(),
           receiverPhoto,
-          message: message
+          message: message,
+          timestamp: time
         });
 
       await firebase
@@ -64,26 +100,27 @@ const SendMessage = () => {
         .collection("messages")
         .doc(currentUser.displayName)
         .collection("senders")
-        .doc(receiver)
+        .doc(receiver.toLowerCase().trim())
         .set({
           senderName: currentUser.displayName,
           senderPhoto: currentUser.photoURL,
-          receiver: receiver,
+          receiver: receiver.toLowerCase().trim(),
           receiverPhoto,
-          message: message
+          message: message,
+          timestamp: time
         });
 
       await firebase
         .firestore()
         .collection("messages")
-        .doc(receiver)
+        .doc(receiver.toLowerCase().trim())
         .collection("senders")
         .doc(currentUser.displayName)
         .collection("messages")
         .add({
           senderName: currentUser.displayName,
           senderPhoto: currentUser.photoURL,
-          receiver: receiver,
+          receiver: receiver.toLowerCase().trim(),
           text: message,
           timestamp: time,
           receiverPhoto
@@ -94,24 +131,36 @@ const SendMessage = () => {
         .collection("messages")
         .doc(currentUser.displayName)
         .collection("senders")
-        .doc(receiver)
+        .doc(receiver.toLowerCase().trim())
         .collection("messages")
         .add({
           senderName: currentUser.displayName,
           senderPhoto: currentUser.photoURL,
-          receiver: receiver,
+          receiver: receiver.toLowerCase().trim(),
           text: message,
           timestamp: time,
           receiverPhoto
-        });
+        })
+        .then(setIsLoading(false));
+
       setNewMessage(message => message + 1);
+      props.handleSend();
+      
     } catch (err) {
       console.log(err);
+      setIsLoading(false);
+      return;
     }
   };
 
   return (
     <View style={styles.wrapper}>
+      {isError ? (
+        <View style={styles.errorWrapper}>
+          <Text style={styles.errorMsg}>User doesn't exist!</Text>
+        </View>
+      ) : null}
+
       <Text style={styles.titleText}>Send a message</Text>
       <View style={styles.inputWrapper}>
         <View style={{ width: 150 }}>
@@ -209,6 +258,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
     fontSize: 20,
     fontWeight: "bold"
+  },
+  errorWrapper: {
+    backgroundColor: "#ff443b",
+    borderRadius: 5,
+    top: 30
+  },
+  errorMsg: {
+    color: "#fff",
+    fontSize: 20,
+    padding: 8,
+    fontWeight: "bold",
+    paddingHorizontal: 20
   }
 });
 
