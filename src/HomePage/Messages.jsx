@@ -12,14 +12,20 @@ import firebase from "../../firebase";
 import SingleChat from "./SingleChat";
 import { Icon } from "react-native-elements";
 import Spinner from "react-native-loading-spinner-overlay";
+import { AppContext } from "../../Context";
 
 const Home = () => {
   const [isSending, setIsSending] = useState(false);
-  const [isChatting, setIsChatting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [senders, setSenders] = useState([]);
-  const [target, setTarget] = useState("");
+  // const [target, setTarget] = useState("");
   const currentUser = firebase.auth().currentUser;
+  const { targetContext, isChattingContext, newMessageContext } = useContext(
+    AppContext
+  );
+  const [target, setTarget] = targetContext;
+  const [isChatting, setIsChatting] = isChattingContext;
+  const [newMessage, setNewMessage] = newMessageContext;
 
   // Checks to see with whom user has active chats with
   const getSenders = async () => {
@@ -58,16 +64,10 @@ const Home = () => {
 
   useEffect(
     () => {
-      firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
-          getSenders();
-        } else {
-          return;
-        }
-      });
+      getSenders();
     },
     //eslint-disable-next-line
-    []
+    [newMessage]
   );
 
   return (
@@ -154,7 +154,10 @@ const Home = () => {
                             }}
                           >
                             <Text style={{ fontSize: 16, marginTop: 10 }}>
-                              {sender.timestamp.substring(11, 20)}
+                              {sender.timestamp
+                                .toDate()
+                                .toString()
+                                .substring(16, 24)}
                             </Text>
                           </View>
                         </View>
@@ -173,7 +176,10 @@ const Home = () => {
                             }}
                           >
                             <Text style={{ fontSize: 16, marginTop: 10 }}>
-                              {sender.timestamp.substring(11, 20)}
+                              {sender.timestamp
+                                .toDate()
+                                .toString()
+                                .substring(16, 24)}
                             </Text>
                           </View>
                         </View>
@@ -309,7 +315,7 @@ const styles = StyleSheet.create({
     top: 120
   },
   emptyInbox: {
-    fontSize: 23,
+    fontSize: 20,
     color: "rgba(0,0,0,0.4)"
   }
 });

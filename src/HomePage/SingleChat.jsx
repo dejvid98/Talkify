@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import {
   Text,
   View,
   Image,
   TextInput,
   TouchableOpacity,
-  ScrollView,
   StyleSheet,
   Dimensions,
   KeyboardAvoidingView,
@@ -15,46 +14,78 @@ import {
 import firebase from "../../firebase";
 import { Icon } from "react-native-elements";
 import Spinner from "react-native-loading-spinner-overlay";
+import { AppContext } from "../../Context";
 
 const SingleChat = props => {
+  const { newMessageContext, targetContext } = useContext(AppContext);
+  const [newMessage, setNewMessage] = newMessageContext;
+  const [target, setTarget] = targetContext;
   const [messages, setMessages] = useState([]);
-  const currentUser = firebase.auth().currentUser;
   const [message, setMessage] = useState("");
-  const inputEl = useRef(null);
+  const [receiverPhoto, setReceiverPhoto] = useState("");
+  const [isFirstMessage, setIsFirstMessage] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const currentUser = firebase.auth().currentUser;
+  const inputEl = useRef(null);
 
-  const updateLastMessage = () => {
-    const time = new Date().toLocaleString();
+  const updateLastMessage = async () => {
+    const time = new Date();
+    let receiverPhoto = "";
+
+    const storage = firebase.storage();
+    const storageRef = storage.ref();
 
     try {
-      firebase
-        .firestore()
-        .collection("messages")
-        .doc(props.target)
-        .collection("senders")
-        .doc(currentUser.displayName)
-        .update({
-          message: message,
-          timestamp: time
-        });
-      firebase
-        .firestore()
-        .collection("messages")
-        .doc(currentUser.displayName)
-        .collection("senders")
-        .doc(props.target)
-        .update({
-          message: message,
-          timestamp: time
+      await storageRef
+        .child("avatars/" + props.target.toLowerCase().trim())
+        .getDownloadURL()
+        .then(function(url) {
+          receiverPhoto = url;
         });
     } catch (error) {
-      console.log(error);
+      await firebase
+        .firestore()
+        .collection("users")
+        .doc(props.target.toLowerCase().trim())
+        .get()
+        .then(doc => {
+          receiverPhoto = doc.data().photoURL;
+        });
     }
+
+    await firebase
+      .firestore()
+      .collection("messages")
+      .doc(props.target)
+      .collection("senders")
+      .doc(currentUser.displayName)
+      .set({
+        message: message.trim(),
+        timestamp: firebase.firestore.Timestamp.fromDate(time),
+        senderPhoto: currentUser.photoURL,
+        receiver: props.target,
+        senderName: currentUser.displayName,
+        receiverPhoto
+      });
+    await firebase
+      .firestore()
+      .collection("messages")
+      .doc(currentUser.displayName)
+      .collection("senders")
+      .doc(props.target)
+      .set({
+        message: message.trim(),
+        timestamp: firebase.firestore.Timestamp.fromDate(time),
+        senderPhoto: currentUser.photoURL,
+        receiver: currentUser.displayName,
+        senderName: props.target,
+        receiverPhoto
+      });
   };
 
   const sendMessage = async e => {
     const id = Math.random() * 500;
-    const time = new Date().toLocaleString();
+    const time = new Date();
     if (message.trim().length > 0) {
       try {
         await firebase
@@ -67,8 +98,8 @@ const SingleChat = props => {
           .add({
             senderName: currentUser.displayName,
             senderPhoto: currentUser.photoURL,
-            text: message,
-            timestamp: time,
+            text: message.trim(),
+            timestamp: firebase.firestore.Timestamp.fromDate(time),
             id: id
           })
           .then(
@@ -82,12 +113,13 @@ const SingleChat = props => {
               .add({
                 senderName: currentUser.displayName,
                 senderPhoto: currentUser.photoURL,
-                text: message,
-                timestamp: time,
+                text: message.trim(),
+                timestamp: firebase.firestore.Timestamp.fromDate(time),
                 id: id
               })
           )
           .then(setMessage(""));
+        setNewMessage(5);
         updateLastMessage();
       } catch (err) {
         console.log(err);
@@ -167,7 +199,12 @@ const SingleChat = props => {
                     </View>
                     <View style={styles.senderInfo}>
                       <Text style={styles.senderName}>{item.senderName}</Text>
-                      <Text style={styles.timestamp}>{item.timestamp}</Text>
+                      <Text style={styles.timestamp}>
+                        {item.timestamp
+                          .toDate()
+                          .toString()
+                          .substring(16, 21)}
+                      </Text>
                     </View>
                   </View>
                   <View>
@@ -294,4 +331,5 @@ const styles = StyleSheet.create({
     color: "white"
   }
 });
+
 export default SingleChat;

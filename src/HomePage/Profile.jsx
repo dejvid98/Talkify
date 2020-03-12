@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Image, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, Image, Dimensions } from "react-native";
 import { Button } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as ImagePicker from "expo-image-picker";
@@ -38,6 +38,7 @@ const Profile = ({ navigation }) => {
         .ref("avatars/" + currentUser.displayName.toLowerCase());
       const imageBlob = await uriToBlob(photo);
       await storageRef.put(imageBlob);
+      await getPhotoURL();
     } catch (error) {
       console.log(error);
     }
@@ -90,11 +91,13 @@ const Profile = ({ navigation }) => {
           <Button
             title="Change avatar"
             buttonStyle={styles.button}
-            titleStyle={{ fontSize: 20 }}
+            titleStyle={{
+              fontSize: 15
+            }}
             icon={
               <Icon
                 name="image"
-                size={25}
+                size={15}
                 color="white"
                 style={{ paddingHorizontal: 10, paddingVertical: 4 }}
               />
@@ -104,7 +107,7 @@ const Profile = ({ navigation }) => {
           <TouchableOpacity style={styles.logOutWrapper} onPress={handleLogout}>
             <Text
               style={{
-                fontSize: 22,
+                fontSize: 15,
                 color: "white"
               }}
             >
@@ -149,13 +152,11 @@ const styles = StyleSheet.create({
   imageWrapper: {
     flex: 1,
     alignItems: "center",
-    marginTop: 30,
-    width: 300,
-    height: 300
+    marginTop: 30
   },
   image: {
-    width: 300,
-    height: 300,
+    width: Dimensions.get("window").width > 400 ? 300 : 150,
+    height: Dimensions.get("window").width > 400 ? 300 : 150,
     borderRadius: 250
   },
   username: {
@@ -176,7 +177,7 @@ const styles = StyleSheet.create({
   logOutWrapper: {
     borderRadius: 50,
     padding: 10,
-    width: 235,
+    width: 200,
     marginTop: 15,
     justifyContent: "center",
     alignItems: "center",

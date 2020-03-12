@@ -8,7 +8,6 @@ import {
   TouchableOpacity
 } from "react-native";
 import { AppContext } from "../../Context";
-import Spinner from "react-native-loading-spinner-overlay";
 
 const SendMessage = props => {
   const [message, setMessage] = useState("");
@@ -28,21 +27,22 @@ const SendMessage = props => {
   };
 
   const sendMessage = async () => {
-    const time = new Date().toLocaleString();
+    const time = new Date();
     const currentUser = firebase.auth().currentUser;
     const storage = firebase.storage();
     const storageRef = storage.ref();
     let receiverPhoto = "";
+
     if (message.length < 1 || receiver.length < 1) {
       return;
     }
+
     setIsLoading(true);
-    const recRef = firebase
+
+    await firebase
       .firestore()
       .collection("users")
-      .doc(receiver);
-
-    recRef
+      .doc(receiver.toLowerCase())
       .get()
       .then(function(doc) {
         if (!doc.exists) {
@@ -91,8 +91,8 @@ const SendMessage = props => {
           senderPhoto: currentUser.photoURL,
           receiver: receiver.toLowerCase().trim(),
           receiverPhoto,
-          message: message,
-          timestamp: time
+          message: message.trim(),
+          timestamp: firebase.firestore.Timestamp.fromDate(time)
         });
 
       await firebase
@@ -106,8 +106,8 @@ const SendMessage = props => {
           senderPhoto: currentUser.photoURL,
           receiver: receiver.toLowerCase().trim(),
           receiverPhoto,
-          message: message,
-          timestamp: time
+          message: message.trim(),
+          timestamp: firebase.firestore.Timestamp.fromDate(time)
         });
 
       await firebase
@@ -122,7 +122,7 @@ const SendMessage = props => {
           senderPhoto: currentUser.photoURL,
           receiver: receiver.toLowerCase().trim(),
           text: message,
-          timestamp: time,
+          timestamp: firebase.firestore.Timestamp.fromDate(time),
           receiverPhoto
         });
 
@@ -138,14 +138,13 @@ const SendMessage = props => {
           senderPhoto: currentUser.photoURL,
           receiver: receiver.toLowerCase().trim(),
           text: message,
-          timestamp: time,
+          timestamp: firebase.firestore.Timestamp.fromDate(time),
           receiverPhoto
         })
         .then(setIsLoading(false));
 
       setNewMessage(message => message + 1);
       props.handleSend();
-      
     } catch (err) {
       console.log(err);
       setIsLoading(false);

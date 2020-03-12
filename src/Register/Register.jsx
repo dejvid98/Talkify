@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Text, StyleSheet, ImageBackground, View } from "react-native";
+import {
+  Text,
+  StyleSheet,
+  ImageBackground,
+  View,
+  Dimensions
+} from "react-native";
 import LandingPhoto from "../../assets/Talkify-HomeScreen-V1.png";
 import { Input, Button } from "react-native-elements";
 import isEmail from "validator/lib/isEmail";
@@ -16,6 +22,7 @@ const Landing = ({ navigation }) => {
   const [isPasswordError, setIsPasswordError] = useState(false);
 
   useEffect(() => {
+    console.log(Dimensions.get("window").height);
     try {
       firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
@@ -193,7 +200,7 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: "white",
     borderRadius: 30,
-    marginTop: 30,
+    marginTop: Dimensions.get("window").height < 700 ? 15 : 30,
     borderBottomColor: "rgba(0,0,0,0)",
     elevation: 5
   },
@@ -204,11 +211,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    top: 130
+    top: Dimensions.get("window").height > 1000 ? 140 : 100
   },
   errorWrapper: {
     backgroundColor: "#ff443b",
-    borderRadius: 5
+    borderRadius: 5,
+    margin: 5
   },
   errorMsg: {
     color: "#fff",
