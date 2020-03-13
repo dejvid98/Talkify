@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, Dimensions } from "react-native";
 import { Button } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as ImagePicker from "expo-image-picker";
-import firebase from "../../firebase";
+import firebase from "../../../firebase";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 const Profile = ({ navigation }) => {

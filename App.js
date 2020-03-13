@@ -5,11 +5,13 @@ import { createMaterialBottomTabNavigator } from "@react-navigation/material-bot
 import Login from "./src/Login/Login";
 import Register from "./src/Register/Register";
 import Landing from "./src/LandingScreen/Landing";
+import Messages from "./src/HomePage/Messages/Messages";
+import Friends from "./src/HomePage/Friends/Friends";
+import Profile from "./src/HomePage/Profile/Profile";
+import AddFriendWrapper from "./src/HomePage/Friends/AddFriendWrapper";
+import SingleChatWindow from "./src/HomePage/Messages/ChatWindow";
 import { decode, encode } from "base-64";
 import { YellowBox } from "react-native";
-import Messages from "./src/HomePage/Messages";
-import Friends from "./src/HomePage/Friends";
-import Profile from "./src/HomePage/Profile";
 import { MaterialCommunityIcons } from "react-native-vector-icons";
 import { ContextProvider } from "./Context";
 import firebase from "./firebase";
@@ -105,6 +107,8 @@ export default function App() {
           />
           <Stack.Screen name="Register" component={Register} />
           <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="SingleChatWindow" component={SingleChatWindow} />
+          <Stack.Screen name="AddFriend" component={AddFriendWrapper} />
         </Stack.Navigator>
       </NavigationContainer>
     </ContextProvider>

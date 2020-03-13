@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import firebase from "../../firebase";
 import {
   View,
   Text,
@@ -9,6 +8,8 @@ import {
 } from "react-native";
 import { Icon } from "react-native-elements";
 import Spinner from "react-native-loading-spinner-overlay";
+import firebase from "../../../firebase";
+import { useFocusEffect } from "@react-navigation/native";
 
 const AddFriend = props => {
   const [username, setUsername] = useState("");
@@ -31,17 +32,18 @@ const AddFriend = props => {
     const storage = firebase.storage();
     const storageRef = storage.ref();
     let receiverPhoto = "";
+
     if (username.length < 1) {
       return;
     }
-
-    const recRef = db.collection("users").doc(username.toLowerCase());
     setIsLoading(true);
 
-    await recRef
+    await db
+      .collection("users")
+      .doc(username.toLowerCase())
       .get()
       .then(function(doc) {
-        if (doc.exists) {
+        if (!doc.exists) {
           handleError();
           setIsLoading(false);
           return;
@@ -95,6 +97,7 @@ const AddFriend = props => {
         friendName: username.toLowerCase().trim(),
         friendPhoto: receiverPhoto
       });
+
     setIsLoading(false);
     setSuccess(true);
 
@@ -128,7 +131,7 @@ const AddFriend = props => {
       ) : null}
       <Text style={styles.titleText}>Add a new friend</Text>
       <View style={styles.inputWrapper}>
-        <View style={{ width: 220 }}>
+        <View style={styles.addWrapper}>
           <TextInput
             multiline={true}
             style={styles.inputTo}
@@ -164,6 +167,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#4ede9a"
   },
+  addWrapper: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center"
+  },
   titleText: {
     position: "relative",
     marginTop: 65,
@@ -173,49 +181,22 @@ const styles = StyleSheet.create({
     marginBottom: 30
   },
   inputWrapper: {
-    width: 300,
-    height: 300,
-    alignItems: "center"
+    height: 300
   },
   inputTo: {
     borderColor: "rgba(0,0,0,0.3)",
     borderWidth: 1,
     borderRadius: 15,
     padding: 10,
-    margin: 5
+    width: 180
   },
   inputText: {
     borderColor: "rgba(0,0,0,0.3)",
     borderWidth: 1,
     borderRadius: 15,
-    padding: 10,
-    margin: 5,
-    width: 300
+    padding: 10
   },
-  buttonWrapper: {
-    flex: 1,
-    width: 320,
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  buttonReg: {
-    padding: 15,
-    backgroundColor: "white",
-    borderRadius: 10,
-    borderWidth: 3,
-    borderColor: "#fff",
-    width: 200,
-    position: "relative",
-    top: 0,
-    elevation: 5
-  },
-  buttonTextReg: {
-    color: "#00d1b2",
-    textAlign: "center",
-    paddingHorizontal: 40,
-    fontSize: 20,
-    fontWeight: "bold"
-  },
+
   successWrapper: {
     backgroundColor: "#21db73",
     borderRadius: 5,
@@ -248,11 +229,10 @@ const styles = StyleSheet.create({
   iconWrapper: {
     backgroundColor: "#25d366",
     borderRadius: 60,
-    width: 70,
-    height: 70,
+    width: 55,
+    height: 55,
     justifyContent: "center",
-    alignItems: "center",
-    marginTop: 150
+    alignItems: "center"
   },
   spinnerTextStyle: {
     color: "white",

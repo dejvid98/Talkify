@@ -9,42 +9,31 @@ import {
   BackHandler
 } from "react-native";
 import SendMessage from "./SendMessage";
-import firebase from "../../firebase";
-import SingleChat from "./SingleChat";
+import firebase from "../../../firebase";
 import { Icon } from "react-native-elements";
-import Spinner from "react-native-loading-spinner-overlay";
-import { AppContext } from "../../Context";
+import { AppContext } from "../../../Context";
 import { useFocusEffect } from "@react-navigation/native";
 
-const Home = () => {
+const Home = ({ navigation }) => {
   const [isSending, setIsSending] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [senders, setSenders] = useState([]);
-  // const [target, setTarget] = useState("");
   const currentUser = firebase.auth().currentUser;
-  const { targetContext, isChattingContext, newMessageContext } = useContext(
-    AppContext
-  );
+  const { targetContext, isChattingContext } = useContext(AppContext);
   const [target, setTarget] = targetContext;
   const [isChatting, setIsChatting] = isChattingContext;
-  const [newMessage, setNewMessage] = newMessageContext;
 
   useFocusEffect(
     React.useCallback(() => {
       const onBackPress = () => {
-        if (isChatting || isSending) {
-          setIsChatting(false);
-          setIsSending(false);
-          return true;
-        } else {
-          return true;
-        }
+        setIsSending(false);
+        return true;
       };
       BackHandler.addEventListener("hardwareBackPress", onBackPress);
 
       return () =>
         BackHandler.removeEventListener("hardwareBackPress", onBackPress);
-    }, [isChatting, isSending])
+    }, [])
   );
 
   // Checks to see with whom user has active chats with
@@ -79,7 +68,7 @@ const Home = () => {
 
   const openChat = target => {
     setTarget(target);
-    setIsChatting(true);
+    navigation.navigate("SingleChatWindow");
   };
 
   useEffect(
@@ -87,7 +76,7 @@ const Home = () => {
       getSenders();
     },
     //eslint-disable-next-line
-    [newMessage]
+    []
   );
 
   return (
@@ -117,15 +106,7 @@ const Home = () => {
         <SendMessage handleSend={handleSend} />
       ) : (
         <View style={styles.chatWrapper}>
-          {isChatting ? (
-            <SingleChat target={target} />
-          ) : isLoading ? (
-            <Spinner
-              visible={isLoading}
-              textContent={"Loading..."}
-              textStyle={styles.spinnerTextStyle}
-            />
-          ) : senders.length > 0 ? (
+          {senders.length > 0 ? (
             senders.map((sender, index) => {
               const senderName = sender.senderName;
               const receiverName = sender.receiver;
@@ -138,11 +119,7 @@ const Home = () => {
                 <View key={index}>
                   <TouchableOpacity
                     style={styles.messageWrapper}
-                    onPress={() =>
-                      sender.senderName === currentUser.displayName
-                        ? openChat(sender.receiver)
-                        : openChat(sender.senderName)
-                    }
+                    onPress={() => openChat(senderName)}
                   >
                     <View style={styles.avatarWrapper}>
                       {sender.senderPhoto === currentUser.photoURL ? (

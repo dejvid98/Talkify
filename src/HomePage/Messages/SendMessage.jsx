@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import firebase from "../../firebase";
+import firebase from "../../../firebase";
 import {
   View,
   Text,
@@ -7,7 +7,7 @@ import {
   TextInput,
   TouchableOpacity
 } from "react-native";
-import { AppContext } from "../../Context";
+import { AppContext } from "../../../Context";
 import Spinner from "react-native-loading-spinner-overlay";
 
 const SendMessage = props => {

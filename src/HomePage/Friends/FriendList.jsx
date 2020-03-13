@@ -5,19 +5,16 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
-  ScrollView,
   Image
 } from "react-native";
-import firebase from "../../firebase";
-import { Icon } from "react-native-elements";
-import { AppContext } from "../../Context";
+import firebase from "../../../firebase";
+import { AppContext } from "../../../Context";
 import { useNavigation } from "@react-navigation/native";
 
 const FriendList = () => {
   const navigation = useNavigation();
   const currentUser = firebase.auth().currentUser;
-  const { targetContext, isChattingContext } = useContext(AppContext);
-  const [isChatting, setIsChatting] = isChattingContext;
+  const { targetContext } = useContext(AppContext);
   const [target, setTarget] = targetContext;
   const [friends, setFriends] = useState([]);
   const db = firebase.firestore();
@@ -28,8 +25,7 @@ const FriendList = () => {
 
   const openChat = friend => {
     setTarget(friend);
-    setIsChatting(true);
-    navigation.navigate("Messages");
+    navigation.navigate("SingleChatWindow");
   };
 
   const getFriendList = async () => {
@@ -55,28 +51,32 @@ const FriendList = () => {
 
   return (
     <View>
-      {friends.length > 0
-        ? friends.map((friend, index) => {
-            return (
-              <TouchableOpacity
-                key={index}
-                onPress={() => openChat(friend.friendName)}
-              >
-                <View style={styles.friendWrapper}>
-                  <Image
-                    source={{ uri: friend.friendPhoto }}
-                    style={styles.friendAvatar}
-                  />
-                  <View style={styles.friendNameWrapper}>
-                    <Text style={styles.friendName}>
-                      {capitalizedWord(friend.friendName)}
-                    </Text>
-                  </View>
+      {friends.length > 0 ? (
+        friends.map((friend, index) => {
+          return (
+            <TouchableOpacity
+              key={index}
+              onPress={() => openChat(friend.friendName)}
+            >
+              <View style={styles.friendWrapper}>
+                <Image
+                  source={{ uri: friend.friendPhoto }}
+                  style={styles.friendAvatar}
+                />
+                <View style={styles.friendNameWrapper}>
+                  <Text style={styles.friendName}>
+                    {capitalizedWord(friend.friendName)}
+                  </Text>
                 </View>
-              </TouchableOpacity>
-            );
-          })
-        : null}
+              </View>
+            </TouchableOpacity>
+          );
+        })
+      ) : (
+        <View style={styles.emptyFriendListWrapper}>
+          <Text style={styles.emptyFriendList}>You don't have any friends</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -102,6 +102,16 @@ const styles = StyleSheet.create({
   },
   friendName: {
     fontSize: 30
+  },
+  emptyFriendListWrapper: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: Dimensions.get("window").height * 0.3
+  },
+  emptyFriendList: {
+    fontSize: 20,
+    color: "rgba(0,0,0,0.4)"
   }
 });
 
