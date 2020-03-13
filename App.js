@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator, HeaderTitle } from "@react-navigation/stack";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
@@ -12,6 +12,7 @@ import Friends from "./src/HomePage/Friends";
 import Profile from "./src/HomePage/Profile";
 import { MaterialCommunityIcons } from "react-native-vector-icons";
 import { ContextProvider } from "./Context";
+import firebase from "./firebase";
 
 YellowBox.ignoreWarnings(["Setting a timer"]);
 
@@ -72,6 +73,20 @@ const BottomNav = () => {
 const Stack = createStackNavigator();
 
 export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(
+    () => {
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          setIsLoggedIn(true);
+        } else {
+          return;
+        }
+      });
+    },
+    //eslint-disable-next-line
+    []
+  );
   return (
     <ContextProvider>
       <NavigationContainer>
@@ -82,9 +97,14 @@ export default function App() {
           }}
         >
           <Stack.Screen name="Landing" component={Landing} headerShow="false" />
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Register" component={Register} />
           <Stack.Screen name="Home" children={BottomNav} />
+          <Stack.Screen
+            name="LandingLogout"
+            component={Landing}
+            headerShow="false"
+          />
+          <Stack.Screen name="Register" component={Register} />
+          <Stack.Screen name="Login" component={Login} />
         </Stack.Navigator>
       </NavigationContainer>
     </ContextProvider>

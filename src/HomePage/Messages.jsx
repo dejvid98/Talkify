@@ -5,7 +5,8 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
-  Dimensions
+  Dimensions,
+  BackHandler
 } from "react-native";
 import SendMessage from "./SendMessage";
 import firebase from "../../firebase";
@@ -13,6 +14,7 @@ import SingleChat from "./SingleChat";
 import { Icon } from "react-native-elements";
 import Spinner from "react-native-loading-spinner-overlay";
 import { AppContext } from "../../Context";
+import { useFocusEffect } from "@react-navigation/native";
 
 const Home = () => {
   const [isSending, setIsSending] = useState(false);
@@ -26,6 +28,24 @@ const Home = () => {
   const [target, setTarget] = targetContext;
   const [isChatting, setIsChatting] = isChattingContext;
   const [newMessage, setNewMessage] = newMessageContext;
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        if (isChatting || isSending) {
+          setIsChatting(false);
+          setIsSending(false);
+          return true;
+        } else {
+          return true;
+        }
+      };
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    }, [isChatting, isSending])
+  );
 
   // Checks to see with whom user has active chats with
   const getSenders = async () => {
@@ -194,8 +214,15 @@ const Home = () => {
                             padding: 2
                           }}
                         />
-                        <Text style={{ color: "#787878", fontSize: 16 }}>
-                          {sender.message}
+                        <Text
+                          style={{
+                            color: "#787878",
+                            fontSize: 16
+                          }}
+                        >
+                          {sender.message.length > 20
+                            ? sender.message.trim().substring(0, 20) + "..."
+                            : sender.message.trim()}
                         </Text>
                       </View>
                     </View>

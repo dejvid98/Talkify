@@ -9,8 +9,8 @@ import LandingPhoto from "../../assets/Talkify-HomeScreen-V1.png";
 import firebase from "../../firebase";
 
 const Landing = ({ navigation }) => {
-  useEffect(
-    () => {
+  useEffect(() => {
+    try {
       firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
           navigation.navigate("Home");
@@ -18,10 +18,11 @@ const Landing = ({ navigation }) => {
           return;
         }
       });
-    },
-    //eslint-disable-next-line
-    []
-  );
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
   return (
     <ImageBackground source={LandingPhoto} style={styles.wrapper}>
       <TouchableOpacity
@@ -57,7 +58,7 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: "#fff",
     marginTop: 40,
-    width: 200,
+    width: 240,
     position: "relative",
     top: 50
   },
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: "#fff",
     marginTop: 40,
-    width: 200,
+    width: 240,
     position: "relative",
     top: 70,
     elevation: 5

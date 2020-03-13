@@ -54,7 +54,7 @@ const FriendList = () => {
   );
 
   return (
-    <ScrollView>
+    <View>
       {friends.length > 0
         ? friends.map((friend, index) => {
             return (
@@ -77,7 +77,7 @@ const FriendList = () => {
             );
           })
         : null}
-    </ScrollView>
+    </View>
   );
 };
 

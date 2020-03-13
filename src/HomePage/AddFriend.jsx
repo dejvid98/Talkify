@@ -8,10 +8,14 @@ import {
   TouchableOpacity
 } from "react-native";
 import { Icon } from "react-native-elements";
+import Spinner from "react-native-loading-spinner-overlay";
 
 const AddFriend = props => {
   const [username, setUsername] = useState("");
   const [isError, setIsError] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const currentUser = firebase.auth().currentUser;
 
   const handleError = () => {
@@ -32,20 +36,23 @@ const AddFriend = props => {
     }
 
     const recRef = db.collection("users").doc(username.toLowerCase());
+    setIsLoading(true);
 
     await recRef
       .get()
       .then(function(doc) {
-        if (!doc.exists) {
+        if (doc.exists) {
           handleError();
+          setIsLoading(false);
           return;
         }
       })
       .catch(function(error) {
         console.log("Error getting document:", error);
+        setIsLoading(false);
+        return;
       });
 
-    // Looks for a photo in DB, if not found, sets a default one
     try {
       await storageRef
         .child("avatars/" + username.toLowerCase().trim())
@@ -62,7 +69,9 @@ const AddFriend = props => {
           .then(doc => {
             receiverPhoto = doc.data().photoURL;
           });
-      } catch (err) {
+      } catch (error) {
+        handleError();
+        setIsLoading(false);
         return;
       }
     }
@@ -86,6 +95,13 @@ const AddFriend = props => {
         friendName: username.toLowerCase().trim(),
         friendPhoto: receiverPhoto
       });
+    setIsLoading(false);
+    setSuccess(true);
+
+    setTimeout(() => {
+      setSuccess(false);
+      setUsername("");
+    }, 3000);
   };
 
   return (
@@ -94,6 +110,21 @@ const AddFriend = props => {
         <View style={styles.errorWrapper}>
           <Text style={styles.errorMsg}>User doesn't exist!</Text>
         </View>
+      ) : null}
+      {success ? (
+        <View style={styles.successWrapper}>
+          <Text style={styles.success}>
+            {username.charAt(0).toUpperCase() + username.substring(1) + " "}
+            successfully added!
+          </Text>
+        </View>
+      ) : null}
+      {isLoading ? (
+        <Spinner
+          visible={isLoading}
+          textContent={"Loading..."}
+          textStyle={styles.spinnerTextStyle}
+        />
       ) : null}
       <Text style={styles.titleText}>Add a new friend</Text>
       <View style={styles.inputWrapper}>
@@ -185,6 +216,18 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold"
   },
+  successWrapper: {
+    backgroundColor: "#21db73",
+    borderRadius: 5,
+    top: 30
+  },
+  success: {
+    color: "#fff",
+    fontSize: 20,
+    padding: 8,
+    fontWeight: "bold",
+    paddingHorizontal: 20
+  },
   errorWrapper: {
     backgroundColor: "#ff443b",
     borderRadius: 5,
@@ -210,6 +253,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 150
+  },
+  spinnerTextStyle: {
+    color: "white",
+    fontSize: 30
   }
 });
 

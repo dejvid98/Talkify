@@ -72,7 +72,7 @@ const Profile = ({ navigation }) => {
 
   const handleLogout = () => {
     firebase.auth().signOut();
-    navigation.navigate("Landing");
+    navigation.navigate("LandingLogout");
   };
 
   useEffect(() => {
@@ -155,8 +155,8 @@ const styles = StyleSheet.create({
     marginTop: 30
   },
   image: {
-    width: Dimensions.get("window").width > 400 ? 300 : 150,
-    height: Dimensions.get("window").width > 400 ? 300 : 150,
+    width: 250,
+    height: 250,
     borderRadius: 250
   },
   username: {

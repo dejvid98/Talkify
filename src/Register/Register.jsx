@@ -12,7 +12,7 @@ import isEmail from "validator/lib/isEmail";
 import isEmpty from "validator/lib/isEmpty";
 import firebase from "../../firebase";
 
-const Landing = ({ navigation }) => {
+const Register = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -227,4 +227,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Landing;
+export default Register;

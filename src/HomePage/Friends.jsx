@@ -10,6 +10,7 @@ import firebase from "../../firebase";
 import { Icon } from "react-native-elements";
 import AddFriend from "./AddFriend";
 import FriendList from "./FriendList";
+import { ScrollView } from "react-native-gesture-handler";
 
 const Friends = () => {
   const currentUser = firebase.auth().currentUser;
@@ -41,31 +42,35 @@ const Friends = () => {
           <Text style={styles.titleText}>Friends</Text>
         </View>
       </View>
-      {isAddding ? null : <FriendList />}
+      {isAddding ? null : (
+        <ScrollView
+          style={{ maxHeight: Dimensions.get("window").height * 0.79 }}
+        >
+          <FriendList />
+        </ScrollView>
+      )}
 
       {isAddding ? (
         <AddFriend />
       ) : (
-        <View style={styles.chatWrapper}>
-          <View style={styles.chatIcon}>
-            <TouchableOpacity
-              onPress={() => {
-                setIsAdding(true);
+        <View style={styles.chatIcon}>
+          <TouchableOpacity
+            onPress={() => {
+              setIsAdding(true);
+            }}
+            style={styles.iconWrapper}
+          >
+            <Icon
+              name="person-add"
+              type="material"
+              iconStyle={{
+                fontSize: 30,
+                color: "white",
+                padding: 2,
+                fontWeight: "bold"
               }}
-              style={styles.iconWrapper}
-            >
-              <Icon
-                name="person-add"
-                type="material"
-                iconStyle={{
-                  fontSize: 30,
-                  color: "white",
-                  padding: 2,
-                  fontWeight: "bold"
-                }}
-              />
-            </TouchableOpacity>
-          </View>
+            />
+          </TouchableOpacity>
         </View>
       )}
     </View>
@@ -134,10 +139,9 @@ const styles = StyleSheet.create({
     top: 28
   },
   chatIcon: {
-    flex: 1,
-    alignItems: "flex-end",
-    justifyContent: "flex-end",
-    margin: 20
+    position: "absolute",
+    top: Dimensions.get("window").height - 110,
+    left: Dimensions.get("window").width - 94
   },
   iconWrapper: {
     backgroundColor: "#25d366",

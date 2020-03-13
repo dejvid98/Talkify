@@ -8,6 +8,7 @@ import {
   TouchableOpacity
 } from "react-native";
 import { AppContext } from "../../Context";
+import Spinner from "react-native-loading-spinner-overlay";
 
 const SendMessage = props => {
   const [message, setMessage] = useState("");
@@ -140,9 +141,9 @@ const SendMessage = props => {
           text: message,
           timestamp: firebase.firestore.Timestamp.fromDate(time),
           receiverPhoto
-        })
-        .then(setIsLoading(false));
+        });
 
+      setIsLoading(false);
       setNewMessage(message => message + 1);
       props.handleSend();
     } catch (err) {
@@ -158,6 +159,13 @@ const SendMessage = props => {
         <View style={styles.errorWrapper}>
           <Text style={styles.errorMsg}>User doesn't exist!</Text>
         </View>
+      ) : null}
+      {isLoading ? (
+        <Spinner
+          visible={isLoading}
+          textContent={"Loading..."}
+          textStyle={styles.spinnerTextStyle}
+        />
       ) : null}
 
       <Text style={styles.titleText}>Send a message</Text>
