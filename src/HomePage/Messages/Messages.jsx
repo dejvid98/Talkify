@@ -13,10 +13,13 @@ import firebase from "../../../firebase";
 import { Icon } from "react-native-elements";
 import { AppContext } from "../../../Context";
 import { useFocusEffect } from "@react-navigation/native";
+import { TextInput } from "react-native-gesture-handler";
 
 const Home = ({ navigation }) => {
   const [isSending, setIsSending] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [senderSearch, setSenderSearch] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
   const [senders, setSenders] = useState([]);
   const currentUser = firebase.auth().currentUser;
   const { targetContext, isChattingContext } = useContext(AppContext);
@@ -35,6 +38,16 @@ const Home = ({ navigation }) => {
         BackHandler.removeEventListener("hardwareBackPress", onBackPress);
     }, [])
   );
+
+  const findSender = text => {
+    setSenderSearch(text);
+
+    const filteredSenders = senders.filter(sender =>
+      sender.senderName.startsWith(senderSearch.toLowerCase())
+    );
+
+    setSenders(filteredSenders);
+  };
 
   // Checks to see with whom user has active chats with
   const getSenders = async () => {
@@ -71,6 +84,16 @@ const Home = ({ navigation }) => {
     navigation.navigate("SingleChatWindow");
   };
 
+  const handleSearchClose = () => {
+    if (isSearching) {
+      setIsSearching(false);
+      getSenders();
+      setSenderSearch("");
+    } else {
+      setIsSearching(true);
+    }
+  };
+
   useEffect(
     () => {
       getSenders();
@@ -96,10 +119,32 @@ const Home = ({ navigation }) => {
             />
           ) : null}
         </View>
+
         <View
-          style={{ flex: 20, justifyContent: "center", alignItems: "center" }}
+          style={{
+            flex: 20,
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "row"
+          }}
         >
           <Text style={styles.titleText}>Messages</Text>
+          {isSearching ? (
+            <TextInput
+              style={styles.searchInput}
+              value={senderSearch}
+              onChangeText={text => findSender(text)}
+            />
+          ) : null}
+
+          <View style={styles.serachIconWrapper}>
+            <Icon
+              name="search"
+              type="material"
+              iconStyle={{ fontSize: 30, color: "white" }}
+              onPress={handleSearchClose}
+            />
+          </View>
         </View>
       </View>
       {isSending ? (
@@ -181,7 +226,13 @@ const Home = ({ navigation }) => {
                           </View>
                         </View>
                       )}
-                      <View style={{ flexDirection: "row", marginTop: 5 }}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          marginTop: 5,
+                          marginBottom: 5
+                        }}
+                      >
                         <Icon
                           name="check"
                           type="material"
@@ -257,12 +308,13 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
     top: 30,
-    right: 25
+    right: 25,
+    flex: 5
   },
   senderAvatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 80,
+    width: 50,
+    height: 50,
+    borderRadius: 50,
     flex: 1
   },
   messageWrapper: {
@@ -270,7 +322,8 @@ const styles = StyleSheet.create({
     borderBottomColor: "rgba(0,0,0,0.2)",
     borderBottomWidth: 0.6,
     width: Dimensions.get("window").width,
-    paddingBottom: 8
+    paddingBottom: 8,
+    marginBottom: 10
   },
   chatWrapper: {
     flexDirection: "column",
@@ -278,10 +331,10 @@ const styles = StyleSheet.create({
     flex: 1
   },
   avatarWrapper: {
-    height: 80,
-    width: 80,
-    marginTop: 5,
-    marginLeft: 5
+    height: 50,
+    width: 50,
+    marginTop: 15,
+    marginLeft: 10
   },
   senderWrapper: {
     justifyContent: "flex-start",
@@ -321,6 +374,19 @@ const styles = StyleSheet.create({
   emptyInbox: {
     fontSize: 20,
     color: "rgba(0,0,0,0.4)"
+  },
+  searchInput: {
+    borderBottomColor: "white",
+    borderBottomWidth: 2,
+    top: 32,
+    width: 150,
+    color: "white",
+    fontSize: 18,
+    padding: -10
+  },
+  serachIconWrapper: {
+    top: 32,
+    flex: 1
   }
 });
 

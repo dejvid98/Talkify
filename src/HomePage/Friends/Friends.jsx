@@ -7,20 +7,16 @@ import {
   Dimensions
 } from "react-native";
 import { Icon } from "react-native-elements";
-import AddFriend from "./AddFriend";
 import FriendList from "./FriendList";
 import { ScrollView } from "react-native-gesture-handler";
 import { AppContext } from "../../../Context";
-import { useFocusEffect } from "@react-navigation/native";
 
 const Friends = ({ navigation }) => {
   const { targetContext, isChattingContext } = useContext(AppContext);
   const [target, setTarget] = targetContext;
   const [isChatting, setIsChatting] = isChattingContext;
 
-  const addFriend = () => {
-    navigation.navigate("AddFriend");
-  };
+ 
 
   useEffect(
     () => {

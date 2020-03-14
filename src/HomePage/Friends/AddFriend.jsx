@@ -1,22 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  Dimensions,
+  TextInput
 } from "react-native";
 import { Icon } from "react-native-elements";
-import Spinner from "react-native-loading-spinner-overlay";
 import firebase from "../../../firebase";
+import { AppContext } from "../../../Context";
 import { useFocusEffect } from "@react-navigation/native";
 
-const AddFriend = props => {
+const Friends = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [isError, setIsError] = useState(false);
   const [success, setSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const { targetContext, isChattingContext } = useContext(AppContext);
+  const [target, setTarget] = targetContext;
+  const [isChatting, setIsChatting] = isChattingContext;
   const currentUser = firebase.auth().currentUser;
 
   const handleError = () => {
@@ -107,46 +110,67 @@ const AddFriend = props => {
     }, 3000);
   };
 
+  useEffect(
+    () => {
+      setTarget("");
+      setIsChatting(false);
+    },
+    //eslint-disable-next-line
+    []
+  );
   return (
     <View style={styles.wrapper}>
-      {isError ? (
-        <View style={styles.errorWrapper}>
-          <Text style={styles.errorMsg}>User doesn't exist!</Text>
-        </View>
-      ) : null}
-      {success ? (
-        <View style={styles.successWrapper}>
-          <Text style={styles.success}>
-            {username.charAt(0).toUpperCase() + username.substring(1) + " "}
-            successfully added!
-          </Text>
-        </View>
-      ) : null}
-      {isLoading ? (
-        <Spinner
-          visible={isLoading}
-          textContent={"Loading..."}
-          textStyle={styles.spinnerTextStyle}
-        />
-      ) : null}
-      <Text style={styles.titleText}>Add a new friend</Text>
-      <View style={styles.inputWrapper}>
-        <View style={styles.addWrapper}>
-          <TextInput
-            multiline={true}
-            style={styles.inputTo}
-            placeholder="Username"
-            value={username}
-            onChangeText={text => setUsername(text)}
+      <View style={styles.title}>
+        <View style={{ flex: 3 }}>
+          <Icon
+            name="arrow-left"
+            type="font-awesome"
+            containerStyle={styles.icon}
+            iconStyle={{ fontSize: 35, color: "white" }}
+            onPress={() => navigation.goBack()}
           />
-          <View style={styles.chatIcon}>
-            <TouchableOpacity style={styles.iconWrapper} onPress={handleAdd}>
-              <Icon
-                name="add"
-                type="material"
-                iconStyle={{ fontSize: 30, color: "white", padding: 2 }}
-              />
-            </TouchableOpacity>
+        </View>
+        <View
+          style={{ flex: 20, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text style={styles.titleText}>Add friend</Text>
+        </View>
+      </View>
+      <View style={styles.contentWrapper}>
+        {isError ? (
+          <View style={styles.errorWrapper}>
+            <Text style={styles.errorMsg}>User doesn't exist!</Text>
+          </View>
+        ) : null}
+
+        {success ? (
+          <View style={styles.successWrapper}>
+            <Text style={styles.success}>
+              {username.charAt(0).toUpperCase() + username.substring(1) + " "}
+              successfully added!
+            </Text>
+          </View>
+        ) : null}
+        <Text style={styles.addNewFriend}>Add a new friend</Text>
+
+        <View>
+          <View style={styles.addWrapper}>
+            <TextInput
+              multiline={true}
+              style={styles.inputTo}
+              placeholder="Username"
+              value={username}
+              onChangeText={text => setUsername(text)}
+            />
+            <View style={styles.chatIcon}>
+              <TouchableOpacity onPress={handleAdd}>
+                <Icon
+                  name="add"
+                  type="material"
+                  iconStyle={{ fontSize: 60, color: "white" }}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </View>
@@ -155,26 +179,28 @@ const AddFriend = props => {
 };
 
 const styles = StyleSheet.create({
+  contentWrapper: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    bottom: 70
+  },
+
   wrapper: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center"
   },
-  title: {
-    flex: 1,
-    maxHeight: 120,
-    justifyContent: "flex-start",
-    alignItems: "center",
-    backgroundColor: "#4ede9a"
-  },
+
   addWrapper: {
     flexDirection: "row",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    left: 30
   },
-  titleText: {
+  addNewFriend: {
     position: "relative",
-    marginTop: 65,
     fontSize: 30,
     color: "rgba(0,0,0,0.5)",
     fontWeight: "bold",
@@ -188,7 +214,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 15,
     padding: 10,
-    width: 180
+    width: 200
   },
   inputText: {
     borderColor: "rgba(0,0,0,0.3)",
@@ -200,7 +226,7 @@ const styles = StyleSheet.create({
   successWrapper: {
     backgroundColor: "#21db73",
     borderRadius: 5,
-    top: 30
+    marginBottom: 20
   },
   success: {
     color: "#fff",
@@ -212,7 +238,7 @@ const styles = StyleSheet.create({
   errorWrapper: {
     backgroundColor: "#ff443b",
     borderRadius: 5,
-    top: 30
+    marginBottom: 25
   },
   errorMsg: {
     color: "#fff",
@@ -222,22 +248,46 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20
   },
   chatIcon: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  iconWrapper: {
     backgroundColor: "#25d366",
     borderRadius: 60,
-    width: 55,
-    height: 55,
+    width: 60,
+    height: 60,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    right: 30
   },
+
   spinnerTextStyle: {
     color: "white",
     fontSize: 30
+  },
+
+  title: {
+    flex: 1,
+    maxHeight: 120,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#128c7e",
+    flexDirection: "row"
+  },
+  titleText: {
+    position: "relative",
+    fontSize: 30,
+    color: "#fff",
+    fontWeight: "bold",
+    top: 30,
+    right: 25
+  },
+
+  icon: {
+    backgroundColor: "rgba(0,0,0,0)",
+    top: 28
+  },
+
+  iconWrapper: {
+    backgroundColor: "#25d366",
+    borderRadius: 60
   }
 });
 
-export default AddFriend;
+export default Friends;

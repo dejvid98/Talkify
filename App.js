@@ -8,7 +8,7 @@ import Landing from "./src/LandingScreen/Landing";
 import Messages from "./src/HomePage/Messages/Messages";
 import Friends from "./src/HomePage/Friends/Friends";
 import Profile from "./src/HomePage/Profile/Profile";
-import AddFriendWrapper from "./src/HomePage/Friends/AddFriendWrapper";
+import AddFriend from "./src/HomePage/Friends/AddFriend";
 import SingleChatWindow from "./src/HomePage/Messages/ChatWindow";
 import { decode, encode } from "base-64";
 import { YellowBox } from "react-native";
@@ -108,7 +108,7 @@ export default function App() {
           <Stack.Screen name="Register" component={Register} />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="SingleChatWindow" component={SingleChatWindow} />
-          <Stack.Screen name="AddFriend" component={AddFriendWrapper} />
+          <Stack.Screen name="AddFriend" component={AddFriend} />
         </Stack.Navigator>
       </NavigationContainer>
     </ContextProvider>
