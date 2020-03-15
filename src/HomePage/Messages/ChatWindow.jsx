@@ -19,6 +19,7 @@ import Spinner from "react-native-loading-spinner-overlay";
 const ChatWindow = ({ navigation }) => {
   const { targetContext } = useContext(AppContext);
   const [target, setTarget] = targetContext;
+  const [newMessage, setNewMessage] = useState(1);
   const targetCapitalized =
     target.charAt(0).toUpperCase() + target.substring(1);
   const inputEl = useRef(null);
@@ -26,6 +27,7 @@ const ChatWindow = ({ navigation }) => {
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const currentUser = firebase.auth().currentUser;
+  let unsubscribe;
 
   const updateLastMessage = async () => {
     const time = new Date();
@@ -129,7 +131,7 @@ const ChatWindow = ({ navigation }) => {
   // and updates them to the state
   const getChat = async () => {
     try {
-      await firebase
+      unsubscribe = await firebase
         .firestore()
         .collection("messages")
         .doc(currentUser.displayName)
@@ -155,6 +157,10 @@ const ChatWindow = ({ navigation }) => {
   useEffect(
     () => {
       getChat();
+
+      return function cleanup() {
+        unsubscribe();
+      };
     },
     //eslint-disable-next-line
     []
@@ -286,7 +292,7 @@ const styles = StyleSheet.create({
     maxHeight: 120,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#128c7e",
+    backgroundColor: "#05AC72",
     flexDirection: "row"
   },
   titleText: {

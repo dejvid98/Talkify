@@ -16,7 +16,6 @@ const SendMessage = props => {
   const { newMessageContext } = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  //eslint-disable-next-line
   const [newMessage, setNewMessage] = newMessageContext;
 
   const handleError = () => {
@@ -212,7 +211,7 @@ const styles = StyleSheet.create({
     maxHeight: 120,
     justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: "#4ede9a"
+    backgroundColor: "#05AC72"
   },
   titleText: {
     position: "relative",

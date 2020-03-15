@@ -14,6 +14,10 @@ const Profile = ({ navigation }) => {
   const defaultPhoto =
     "https://pngimage.net/wp-content/uploads/2018/06/no-avatar-png-8.png";
 
+  const userCapitalized =
+    currentUser.displayName.charAt(0).toUpperCase() +
+    currentUser.displayName.substring(1);
+
   const uriToBlob = uri => {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
@@ -87,28 +91,21 @@ const Profile = ({ navigation }) => {
       <View style={styles.mainWindow}>
         <View style={styles.imageWrapper}>
           <Image style={styles.image} source={{ uri: photoState }} />
-          <Text style={styles.username}>{currentUser.displayName}</Text>
+          <Text style={styles.username}>{userCapitalized}</Text>
           <Button
-            title="Change avatar"
+            title="Upload image"
             buttonStyle={styles.button}
             titleStyle={{
-              fontSize: 15
+              fontSize: 20,
+              color: "#0873ff"
             }}
-            icon={
-              <Icon
-                name="image"
-                size={15}
-                color="white"
-                style={{ paddingHorizontal: 10, paddingVertical: 4 }}
-              />
-            }
             onPress={openGallery}
           />
           <TouchableOpacity style={styles.logOutWrapper} onPress={handleLogout}>
             <Text
               style={{
-                fontSize: 15,
-                color: "white"
+                fontSize: 20,
+                color: "#ff5252"
               }}
             >
               Logout
@@ -130,7 +127,7 @@ const styles = StyleSheet.create({
     maxHeight: 120,
     justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: "#128c7e"
+    backgroundColor: "#05AC72"
   },
   titleText: {
     position: "relative",
@@ -165,7 +162,7 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 40,
-    backgroundColor: "#34b7f1",
+    backgroundColor: "white",
     paddingHorizontal: 30,
     marginTop: 40,
     elevation: 5
@@ -177,12 +174,14 @@ const styles = StyleSheet.create({
   logOutWrapper: {
     borderRadius: 50,
     padding: 10,
-    width: 200,
-    marginTop: 15,
+    width: 185,
+    marginTop: 35,
     justifyContent: "center",
     alignItems: "center",
     elevation: 5,
-    backgroundColor: "#ff5252"
+    backgroundColor: "white",
+    borderColor: "#ff5252",
+    borderWidth: 1
   }
 });
 

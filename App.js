@@ -14,9 +14,13 @@ import { decode, encode } from "base-64";
 import { YellowBox } from "react-native";
 import { MaterialCommunityIcons } from "react-native-vector-icons";
 import { ContextProvider } from "./Context";
+import ignoreWarnings from "react-native-ignore-warnings";
 import firebase from "./firebase";
+import * as Font from "expo-font";
 
+// Ignores firebase interaction warnings (this is a known bug)
 YellowBox.ignoreWarnings(["Setting a timer"]);
+ignoreWarnings("Setting a timer");
 
 if (!global.btoa) {
   global.btoa = encode;
@@ -25,13 +29,17 @@ if (!global.btoa) {
 if (!global.atob) {
   global.atob = decode;
 }
+const getFonts = () =>
+  Font.loadAsync({
+    "Lato-Regular": require("./assets/fonts/Lato-Regular.ttf")
+  });
 
 const BottomNavigation = createMaterialBottomTabNavigator();
 
 const BottomNav = () => {
   return (
     <BottomNavigation.Navigator
-      activeColor="#30e3ca"
+      activeColor="#00ff71"
       barStyle={{ backgroundColor: "#20232A" }}
       inactiveColor="#fff"
     >
@@ -78,6 +86,7 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   useEffect(
     () => {
+      getFonts();
       firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
           setIsLoggedIn(true);

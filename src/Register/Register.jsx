@@ -22,7 +22,6 @@ const Register = ({ navigation }) => {
   const [isPasswordError, setIsPasswordError] = useState(false);
 
   useEffect(() => {
-    console.log(Dimensions.get("window").height);
     try {
       firebase.auth().onAuthStateChanged(function(user) {
         if (user) {

@@ -18,6 +18,7 @@ const FriendList = () => {
   const [target, setTarget] = targetContext;
   const [friends, setFriends] = useState([]);
   const db = firebase.firestore();
+  let unsubscribe;
 
   const capitalizedWord = word => {
     return word.charAt(0).toUpperCase() + word.substring(1);
@@ -29,7 +30,7 @@ const FriendList = () => {
   };
 
   const getFriendList = async () => {
-    await db
+    unsubscribe = await db
       .collection("friends")
       .doc(currentUser.displayName)
       .collection("friendList")
@@ -40,10 +41,15 @@ const FriendList = () => {
         });
       });
   };
+  
 
   useEffect(
     () => {
       getFriendList();
+
+      return function cleanup() {
+        unsubscribe();
+      };
     },
     //eslint-disable-next-line
     []

@@ -25,11 +25,13 @@ const Home = ({ navigation }) => {
   const { targetContext, isChattingContext } = useContext(AppContext);
   const [target, setTarget] = targetContext;
   const [isChatting, setIsChatting] = isChattingContext;
+  let unSubscribe;
 
   useFocusEffect(
     React.useCallback(() => {
       const onBackPress = () => {
         setIsSending(false);
+        handleSearchClose();
         return true;
       };
       BackHandler.addEventListener("hardwareBackPress", onBackPress);
@@ -52,7 +54,7 @@ const Home = ({ navigation }) => {
   // Checks to see with whom user has active chats with
   const getSenders = async () => {
     try {
-      await firebase
+      unSubscribe = await firebase
         .firestore()
         .collection("messages")
         .doc(currentUser.displayName)
@@ -65,12 +67,12 @@ const Home = ({ navigation }) => {
         });
       setTimeout(() => {
         setIsLoading(false);
-      }, 1000);
+      }, 500);
     } catch (err) {
       console.log(err);
       setTimeout(() => {
         setIsLoading(false);
-      }, 1000);
+      }, 500);
     }
   };
 
@@ -97,6 +99,9 @@ const Home = ({ navigation }) => {
   useEffect(
     () => {
       getSenders();
+      return function cleanup() {
+        unSubscribe();
+      };
     },
     //eslint-disable-next-line
     []
@@ -164,7 +169,11 @@ const Home = ({ navigation }) => {
                 <View key={index}>
                   <TouchableOpacity
                     style={styles.messageWrapper}
-                    onPress={() => openChat(senderName)}
+                    onPress={() => {
+                      senderName === currentUser.displayName
+                        ? openChat(receiverName)
+                        : openChat(senderName);
+                    }}
                   >
                     <View style={styles.avatarWrapper}>
                       {sender.senderPhoto === currentUser.photoURL ? (
@@ -195,7 +204,7 @@ const Home = ({ navigation }) => {
                               right: 30
                             }}
                           >
-                            <Text style={{ fontSize: 16, marginTop: 10 }}>
+                            <Text style={{ fontSize: 16, marginTop: 12 }}>
                               {sender.timestamp
                                 .toDate()
                                 .toString()
@@ -229,7 +238,6 @@ const Home = ({ navigation }) => {
                       <View
                         style={{
                           flexDirection: "row",
-                          marginTop: 5,
                           marginBottom: 5
                         }}
                       >
@@ -299,7 +307,7 @@ const styles = StyleSheet.create({
     maxHeight: 120,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#128c7e",
+    backgroundColor: "#05AC72",
     flexDirection: "row"
   },
   titleText: {
@@ -308,8 +316,9 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
     top: 30,
-    right: 25,
-    flex: 5
+    flex: 5,
+    fontFamily: "Lato-Regular",
+    letterSpacing: 2
   },
   senderAvatar: {
     width: 50,
@@ -322,8 +331,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "rgba(0,0,0,0.2)",
     borderBottomWidth: 0.6,
     width: Dimensions.get("window").width,
-    paddingBottom: 8,
-    marginBottom: 10
+    paddingBottom: 8
   },
   chatWrapper: {
     flexDirection: "column",
@@ -344,7 +352,6 @@ const styles = StyleSheet.create({
   },
   sender: {
     fontSize: 27,
-    top: 5,
     flex: 1
   },
   icon: {
@@ -358,7 +365,7 @@ const styles = StyleSheet.create({
     margin: 20
   },
   iconWrapper: {
-    backgroundColor: "#25d366",
+    backgroundColor: "#01FF70",
     padding: 20,
     borderRadius: 60
   },
@@ -379,7 +386,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "white",
     borderBottomWidth: 2,
     top: 32,
-    width: 150,
+    width: 80,
     color: "white",
     fontSize: 18,
     padding: -10

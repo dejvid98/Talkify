@@ -267,9 +267,10 @@ const styles = StyleSheet.create({
     maxHeight: 120,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#128c7e",
+    backgroundColor: "#05AC72",
     flexDirection: "row"
   },
+  
   titleText: {
     position: "relative",
     fontSize: 30,

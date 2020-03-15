@@ -16,8 +16,6 @@ const Friends = ({ navigation }) => {
   const [target, setTarget] = targetContext;
   const [isChatting, setIsChatting] = isChattingContext;
 
- 
-
   useEffect(
     () => {
       setTarget("");
@@ -74,7 +72,7 @@ const styles = StyleSheet.create({
     maxHeight: 120,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#128c7e",
+    backgroundColor: "#05AC72",
     flexDirection: "row"
   },
   titleText: {
@@ -83,7 +81,8 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
     top: 30,
-    right: 25
+    right: 25,
+    letterSpacing: 2
   },
 
   icon: {
