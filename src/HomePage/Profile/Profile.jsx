@@ -76,7 +76,7 @@ const Profile = ({ navigation }) => {
 
   const handleLogout = () => {
     firebase.auth().signOut();
-    navigation.navigate("LandingLogout");
+    navigation.navigate("Landing");
   };
 
   useEffect(() => {
