@@ -9,7 +9,7 @@ import {
   FlatList,
   TextInput,
   TouchableOpacity,
-  Image
+  Image,
 } from "react-native";
 import { Icon } from "react-native-elements";
 import { AppContext } from "../../../Context";
@@ -39,7 +39,7 @@ const ChatWindow = ({ navigation }) => {
       await storageRef
         .child("avatars/" + target.toLowerCase().trim())
         .getDownloadURL()
-        .then(function(url) {
+        .then(function (url) {
           receiverPhoto = url;
         });
     } catch (error) {
@@ -48,7 +48,7 @@ const ChatWindow = ({ navigation }) => {
         .collection("users")
         .doc(target.toLowerCase().trim())
         .get()
-        .then(doc => {
+        .then((doc) => {
           receiverPhoto = doc.data().photoURL;
         });
     }
@@ -65,7 +65,7 @@ const ChatWindow = ({ navigation }) => {
         senderPhoto: currentUser.photoURL,
         receiver: target,
         senderName: currentUser.displayName,
-        receiverPhoto
+        receiverPhoto,
       });
     await firebase
       .firestore()
@@ -79,11 +79,11 @@ const ChatWindow = ({ navigation }) => {
         senderPhoto: currentUser.photoURL,
         receiver: currentUser.displayName,
         senderName: target,
-        receiverPhoto
+        receiverPhoto,
       });
   };
 
-  const sendMessage = async e => {
+  const sendMessage = async (e) => {
     const id = Math.random() * 500;
     const time = new Date();
     if (message.trim().length > 0) {
@@ -100,7 +100,7 @@ const ChatWindow = ({ navigation }) => {
             senderPhoto: currentUser.photoURL,
             text: message.trim(),
             timestamp: firebase.firestore.Timestamp.fromDate(time),
-            id: id
+            id: id,
           })
           .then(
             firebase
@@ -115,7 +115,7 @@ const ChatWindow = ({ navigation }) => {
                 senderPhoto: currentUser.photoURL,
                 text: message.trim(),
                 timestamp: firebase.firestore.Timestamp.fromDate(time),
-                id: id
+                id: id,
               })
           )
           .then(setMessage(""));
@@ -139,10 +139,10 @@ const ChatWindow = ({ navigation }) => {
         .doc(target)
         .collection("messages")
         .orderBy("timestamp", "desc")
-        .onSnapshot(querySnapshot => {
+        .onSnapshot((querySnapshot) => {
           setMessages([]);
-          querySnapshot.forEach(doc => {
-            setMessages(oldArr => [...oldArr, doc.data()]);
+          querySnapshot.forEach((doc) => {
+            setMessages((oldArr) => [...oldArr, doc.data()]);
           });
         });
       setTimeout(() => {
@@ -201,7 +201,7 @@ const ChatWindow = ({ navigation }) => {
                 ref={inputEl}
                 data={messages}
                 inverted
-                keyExtractor={item => item.id}
+                keyExtractor={(item) => item.id}
                 renderItem={({ item }) =>
                   messages.length > 0 ? (
                     <View
@@ -251,7 +251,7 @@ const ChatWindow = ({ navigation }) => {
                 <View>
                   <TextInput
                     value={message}
-                    onChangeText={text => setMessage(text)}
+                    onChangeText={(text) => setMessage(text)}
                     style={styles.input}
                   />
                 </View>
@@ -280,49 +280,50 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     justifyContent: "flex-start",
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
   },
   titleWrapper: {
     flex: 20,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   title: {
     flex: 1,
-    maxHeight: 120,
+    maxHeight: 100,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#05AC72",
-    flexDirection: "row"
+    backgroundColor: "#4ecca3",
+    flexDirection: "row",
   },
   titleText: {
     position: "relative",
     fontSize: 30,
     color: "#fff",
     fontWeight: "bold",
-    top: 30,
-    right: 25
+    top: 15,
+    right: 25,
   },
 
   chatWrapper: {
     flexDirection: "column",
     width: Dimensions.get("window").width,
-    flex: 1
+    flex: 1,
   },
 
   icon: {
     backgroundColor: "rgba(0,0,0,0)",
-    top: 28
+    top: 15,
+    left: 15,
   },
   iconStyle: {
     fontSize: 35,
-    color: "white"
+    color: "white",
   },
   senderWrapper: {
     width: Dimensions.get("window").width,
     flexDirection: "row",
     height: 80,
-    alignItems: "center"
+    alignItems: "center",
   },
   input: {
     width: Dimensions.get("window").width * 0.75,
@@ -331,72 +332,72 @@ const styles = StyleSheet.create({
     borderRadius: 55,
     padding: 10,
     margin: 5,
-    height: 50
+    height: 50,
   },
   buttonWrapper: {
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   buttonTextReg: {
     color: "#00d1b2",
     textAlign: "center",
     fontSize: 20,
     fontWeight: "bold",
-    padding: 10
+    padding: 10,
   },
   avatar: {
     width: 40,
     height: 40,
-    borderRadius: 50
+    borderRadius: 50,
   },
   senderName: {
-    fontSize: 18
+    fontSize: 18,
   },
   sender: {
     backgroundColor: "#dbf4fd",
     padding: 10,
     borderRadius: 15,
     alignSelf: "flex-start",
-    maxWidth: 350
+    maxWidth: 350,
   },
   senderPosition: {
-    alignItems: "flex-start"
+    alignItems: "flex-start",
   },
   receiver: {
     backgroundColor: "rgba(0,0,0,0.04)",
     padding: 10,
     borderRadius: 15,
     alignSelf: "flex-start",
-    maxWidth: 350
+    maxWidth: 350,
   },
   senderInfo: {
-    marginLeft: 10
+    marginLeft: 10,
   },
   timestamp: {
     fontSize: 12,
-    color: "grey"
+    color: "grey",
   },
   iconWrapper: {
     backgroundColor: "#00d1b2",
     padding: 10,
     borderRadius: 50,
-    marginLeft: 5
+    marginLeft: 5,
   },
   spinnerTextStyle: {
-    color: "white"
+    color: "white",
   },
   mainWrapper: {
     justifyContent: "flex-start",
     alignItems: "flex-start",
     width: Dimensions.get("window").width,
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
   },
   sendingWrapper: {
     width: Dimensions.get("window").width,
     flexDirection: "row",
     height: 80,
-    alignItems: "center"
-  }
+    alignItems: "center",
+  },
 });
 
 export default ChatWindow;

@@ -5,12 +5,12 @@ import {
   Text,
   StyleSheet,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
 import { AppContext } from "../../../Context";
 import Spinner from "react-native-loading-spinner-overlay";
 
-const SendMessage = props => {
+const SendMessage = (props) => {
   const [message, setMessage] = useState("");
   const [receiver, setReceiver] = useState("");
   const { newMessageContext } = useContext(AppContext);
@@ -44,13 +44,13 @@ const SendMessage = props => {
       .collection("users")
       .doc(receiver.toLowerCase())
       .get()
-      .then(function(doc) {
+      .then(function (doc) {
         if (!doc.exists) {
           handleError();
           return;
         }
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log("Error getting document:", error);
       });
 
@@ -59,7 +59,7 @@ const SendMessage = props => {
       await storageRef
         .child("avatars/" + receiver.toLowerCase().trim())
         .getDownloadURL()
-        .then(function(url) {
+        .then(function (url) {
           receiverPhoto = url;
         });
     } catch (error) {
@@ -69,7 +69,7 @@ const SendMessage = props => {
           .collection("users")
           .doc(receiver.toLowerCase().trim())
           .get()
-          .then(doc => {
+          .then((doc) => {
             receiverPhoto = doc.data().photoURL;
           });
       } catch (err) {
@@ -92,7 +92,7 @@ const SendMessage = props => {
           receiver: receiver.toLowerCase().trim(),
           receiverPhoto,
           message: message.trim(),
-          timestamp: firebase.firestore.Timestamp.fromDate(time)
+          timestamp: firebase.firestore.Timestamp.fromDate(time),
         });
 
       await firebase
@@ -107,7 +107,7 @@ const SendMessage = props => {
           receiver: receiver.toLowerCase().trim(),
           receiverPhoto,
           message: message.trim(),
-          timestamp: firebase.firestore.Timestamp.fromDate(time)
+          timestamp: firebase.firestore.Timestamp.fromDate(time),
         });
 
       await firebase
@@ -123,7 +123,7 @@ const SendMessage = props => {
           receiver: receiver.toLowerCase().trim(),
           text: message,
           timestamp: firebase.firestore.Timestamp.fromDate(time),
-          receiverPhoto
+          receiverPhoto,
         });
 
       await firebase
@@ -139,11 +139,11 @@ const SendMessage = props => {
           receiver: receiver.toLowerCase().trim(),
           text: message,
           timestamp: firebase.firestore.Timestamp.fromDate(time),
-          receiverPhoto
+          receiverPhoto,
         });
 
       setIsLoading(false);
-      setNewMessage(message => message + 1);
+      setNewMessage((message) => message + 1);
       props.handleSend();
     } catch (err) {
       console.log(err);
@@ -175,7 +175,7 @@ const SendMessage = props => {
             style={styles.inputTo}
             placeholder="To"
             value={receiver}
-            onChangeText={text => setReceiver(text)}
+            onChangeText={(text) => setReceiver(text)}
           />
         </View>
         <TextInput
@@ -184,7 +184,7 @@ const SendMessage = props => {
           placeholder="Message"
           numberOfLines={4}
           value={message}
-          onChangeText={text => setMessage(text)}
+          onChangeText={(text) => setMessage(text)}
         />
         <View style={styles.buttonWrapper}>
           <TouchableOpacity
@@ -204,14 +204,14 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   title: {
     flex: 1,
     maxHeight: 120,
     justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: "#05AC72"
+    backgroundColor: "#05AC72",
   },
   titleText: {
     position: "relative",
@@ -219,19 +219,19 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: "rgba(0,0,0,0.5)",
     fontWeight: "bold",
-    marginBottom: 30
+    marginBottom: 30,
   },
   inputWrapper: {
     width: 300,
     height: 300,
-    alignItems: "flex-start"
+    alignItems: "flex-start",
   },
   inputTo: {
     borderColor: "rgba(0,0,0,0.3)",
     borderWidth: 1,
     borderRadius: 15,
     padding: 10,
-    margin: 5
+    margin: 5,
   },
   inputText: {
     borderColor: "rgba(0,0,0,0.3)",
@@ -239,13 +239,13 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 10,
     margin: 5,
-    width: 300
+    width: 300,
   },
   buttonWrapper: {
     flex: 1,
     width: 320,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   buttonReg: {
     padding: 15,
@@ -256,27 +256,27 @@ const styles = StyleSheet.create({
     width: 200,
     position: "relative",
     top: 0,
-    elevation: 5
+    elevation: 5,
   },
   buttonTextReg: {
     color: "#00d1b2",
     textAlign: "center",
     paddingHorizontal: 40,
     fontSize: 20,
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   errorWrapper: {
     backgroundColor: "#ff443b",
     borderRadius: 5,
-    top: 30
+    top: 30,
   },
   errorMsg: {
     color: "#fff",
     fontSize: 20,
     padding: 8,
     fontWeight: "bold",
-    paddingHorizontal: 20
-  }
+    paddingHorizontal: 20,
+  },
 });
 
 export default SendMessage;

@@ -6,7 +6,7 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
-  BackHandler
+  BackHandler,
 } from "react-native";
 import SendMessage from "./SendMessage";
 import firebase from "../../../firebase";
@@ -41,10 +41,10 @@ const Home = ({ navigation }) => {
     }, [])
   );
 
-  const findSender = text => {
+  const findSender = (text) => {
     setSenderSearch(text);
 
-    const filteredSenders = senders.filter(sender =>
+    const filteredSenders = senders.filter((sender) =>
       sender.senderName.startsWith(senderSearch.toLowerCase())
     );
 
@@ -59,10 +59,10 @@ const Home = ({ navigation }) => {
         .collection("messages")
         .doc(currentUser.displayName)
         .collection("senders")
-        .onSnapshot(querySnapshot => {
+        .onSnapshot((querySnapshot) => {
           setSenders([]);
-          querySnapshot.forEach(sender => {
-            setSenders(oldArr => [...oldArr, sender.data()]);
+          querySnapshot.forEach((sender) => {
+            setSenders((oldArr) => [...oldArr, sender.data()]);
           });
         });
       setTimeout(() => {
@@ -81,7 +81,7 @@ const Home = ({ navigation }) => {
     setIsChatting(false);
   };
 
-  const openChat = target => {
+  const openChat = (target) => {
     setTarget(target);
     navigation.navigate("SingleChatWindow");
   };
@@ -130,7 +130,7 @@ const Home = ({ navigation }) => {
             flex: 20,
             justifyContent: "center",
             alignItems: "center",
-            flexDirection: "row"
+            flexDirection: "row",
           }}
         >
           <Text style={styles.titleText}>Messages</Text>
@@ -138,7 +138,7 @@ const Home = ({ navigation }) => {
             <TextInput
               style={styles.searchInput}
               value={senderSearch}
-              onChangeText={text => findSender(text)}
+              onChangeText={(text) => findSender(text)}
             />
           ) : null}
 
@@ -188,7 +188,6 @@ const Home = ({ navigation }) => {
                         />
                       )}
                     </View>
-
                     <View style={styles.senderWrapper}>
                       {sender.senderName === currentUser.displayName ? (
                         <View style={{ flexDirection: "row" }}>
@@ -201,10 +200,10 @@ const Home = ({ navigation }) => {
                             style={{
                               alignItems: "flex-end",
                               flex: 1,
-                              right: 30
+                              right: 30,
                             }}
                           >
-                            <Text style={{ fontSize: 16, marginTop: 12 }}>
+                            <Text style={{ fontSize: 13, marginTop: 12 }}>
                               {sender.timestamp
                                 .toDate()
                                 .toString()
@@ -223,10 +222,16 @@ const Home = ({ navigation }) => {
                             style={{
                               alignItems: "flex-end",
                               flex: 1,
-                              right: 30
+                              right: 30,
                             }}
                           >
-                            <Text style={{ fontSize: 16, marginTop: 10 }}>
+                            <Text
+                              style={{
+                                fontSize: 12,
+                                marginTop: 10,
+                                color: "#787878",
+                              }}
+                            >
                               {sender.timestamp
                                 .toDate()
                                 .toString()
@@ -238,7 +243,7 @@ const Home = ({ navigation }) => {
                       <View
                         style={{
                           flexDirection: "row",
-                          marginBottom: 5
+                          marginBottom: 5,
                         }}
                       >
                         <Icon
@@ -247,17 +252,17 @@ const Home = ({ navigation }) => {
                           iconStyle={{
                             color: "black",
                             fontSize: 16,
-                            padding: 2
+                            padding: 2,
                           }}
                         />
                         <Text
                           style={{
                             color: "#787878",
-                            fontSize: 16
+                            fontSize: 16,
                           }}
                         >
-                          {sender.message.length > 20
-                            ? sender.message.trim().substring(0, 20) + "..."
+                          {sender.message.length > 30
+                            ? sender.message.trim().substring(0, 30) + "..."
                             : sender.message.trim()}
                         </Text>
                       </View>
@@ -300,101 +305,103 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     justifyContent: "flex-start",
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
   },
   title: {
     flex: 1,
-    maxHeight: 120,
+    maxHeight: 100,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#05AC72",
-    flexDirection: "row"
+    backgroundColor: "#4ecca3",
+    flexDirection: "row",
   },
   titleText: {
     position: "relative",
     fontSize: 30,
     color: "#fff",
     fontWeight: "bold",
-    top: 30,
+    top: 15,
     flex: 5,
     fontFamily: "Lato-Regular",
-    letterSpacing: 2
+    letterSpacing: 1,
+    right: 25,
   },
   senderAvatar: {
     width: 50,
     height: 50,
     borderRadius: 50,
-    flex: 1
+    flex: 1,
   },
   messageWrapper: {
     flexDirection: "row",
-    borderBottomColor: "rgba(0,0,0,0.2)",
+    borderBottomColor: "rgba(0,0,0,0.08)",
     borderBottomWidth: 0.6,
     width: Dimensions.get("window").width,
-    paddingBottom: 8
+    paddingBottom: 15,
   },
   chatWrapper: {
     flexDirection: "column",
     width: Dimensions.get("window").width,
-    flex: 1
+    flex: 1,
   },
   avatarWrapper: {
     height: 50,
     width: 50,
     marginTop: 15,
-    marginLeft: 10
+    marginLeft: 10,
   },
   senderWrapper: {
     justifyContent: "flex-start",
     alignItems: "flex-start",
     left: 20,
-    flex: 1
+    flex: 1,
   },
   sender: {
-    fontSize: 27,
-    flex: 1
+    fontSize: 20,
+    top: 10,
+    flex: 1,
   },
   icon: {
     backgroundColor: "rgba(0,0,0,0)",
-    top: 28
+    top: 28,
   },
   chatIcon: {
     flex: 1,
     alignItems: "flex-end",
     justifyContent: "flex-end",
-    margin: 20
+    margin: 15,
   },
   iconWrapper: {
-    backgroundColor: "#01FF70",
-    padding: 20,
-    borderRadius: 60
+    backgroundColor: "#4ecca3",
+    padding: 15,
+    borderRadius: 60,
   },
   spinnerTextStyle: {
-    color: "#FFF"
+    color: "#FFF",
   },
   emptyInboxWrapper: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    top: 120
+    top: 120,
   },
   emptyInbox: {
     fontSize: 20,
-    color: "rgba(0,0,0,0.4)"
+    color: "rgba(0,0,0,0.4)",
   },
   searchInput: {
     borderBottomColor: "white",
     borderBottomWidth: 2,
-    top: 32,
-    width: 80,
+    top: 20,
+    width: 120,
     color: "white",
     fontSize: 18,
-    padding: -10
+    padding: -10,
   },
   serachIconWrapper: {
-    top: 32,
-    flex: 1
-  }
+    top: 20,
+    flex: 1,
+  },
 });
 
 export default Home;
