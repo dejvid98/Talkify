@@ -22,6 +22,7 @@
 
 ```
     $ npm install
+
     $ npm start
 ```
 
@@ -31,11 +32,6 @@
 
 <center> <h2>Screens</h2> </center>
 
-<!-- ![Landing Page](https://i.imgur.com/BwrocBu.jpg=50px) -->
-<img src="https://i.imgur.com/BwrocBu.jpg" alt="landing" width="190"/> 
-<img src="https://i.imgur.com/9x3OJdK.jpg" alt="register" width="190"/>
-<img src="https://i.imgur.com/zFjdS4W.jpg" alt="profile" width="190"/>
-<img src="https://i.imgur.com/qT3IvMa.jpg" alt="messages" width="190"/>
-<img src="https://i.imgur.com/NCOBmSt.jpg" alt="chat" width="190"/>
-
-
+| Landing                                                                | Register                                                                | Profile                                                                | Messages                                                                | Chat                                                                |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| <img src="https://i.imgur.com/BwrocBu.jpg" alt="landing" width="190"/> | <img src="https://i.imgur.com/9x3OJdK.jpg" alt="register" width="190"/> | <img src="https://i.imgur.com/zFjdS4W.jpg" alt="profile" width="190"/> | <img src="https://i.imgur.com/qT3IvMa.jpg" alt="messages" width="190"/> | <img src="https://i.imgur.com/NCOBmSt.jpg" alt="chat" width="190"/> |
