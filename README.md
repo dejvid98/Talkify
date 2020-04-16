@@ -1,6 +1,9 @@
-# [Talkify ](https://devgram.netlify.com/) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/dejvid98/Dev-Gram/pulls)
+# [Talkify ](https://drive.google.com/open?id=1b06TA3SMqdl7jnMtuIgoMEgGtfuyBoab) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/dejvid98/Dev-Gram/pulls)
 
 ##### _Chat android app made with React Native_
+
+
+# [Download the APK ](https://drive.google.com/open?id=1b06TA3SMqdl7jnMtuIgoMEgGtfuyBoab)
 
 ## Features
 
