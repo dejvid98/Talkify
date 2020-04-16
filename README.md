@@ -28,7 +28,6 @@
 
 ## Previews
 
----
 
 <center> <h2>Screens</h2> </center>
 
