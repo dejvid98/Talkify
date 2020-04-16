@@ -18,14 +18,14 @@ const Profile = ({ navigation }) => {
     currentUser.displayName.charAt(0).toUpperCase() +
     currentUser.displayName.substring(1);
 
-  const uriToBlob = uri => {
+  const uriToBlob = (uri) => {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.onload = function() {
+      xhr.onload = function () {
         resolve(xhr.response);
       };
 
-      xhr.onerror = function() {
+      xhr.onerror = function () {
         reject(new Error("uriToBlob failed"));
       };
       xhr.responseType = "blob";
@@ -35,7 +35,7 @@ const Profile = ({ navigation }) => {
     });
   };
 
-  const uploadPhoto = async photo => {
+  const uploadPhoto = async (photo) => {
     try {
       const storageRef = await firebase
         .storage()
@@ -53,7 +53,7 @@ const Profile = ({ navigation }) => {
       await storageRef
         .child("avatars/" + currentUser.displayName.toLowerCase())
         .getDownloadURL()
-        .then(function(url) {
+        .then(function (url) {
           setPhotoState(url);
           currentUser.updateProfile({ photoURL: url });
         });
@@ -76,7 +76,7 @@ const Profile = ({ navigation }) => {
 
   const handleLogout = () => {
     firebase.auth().signOut();
-    navigation.navigate("Landing");
+    navigation.navigate("LandingLogout");
   };
 
   useEffect(() => {
@@ -93,11 +93,11 @@ const Profile = ({ navigation }) => {
           <Image style={styles.image} source={{ uri: photoState }} />
           <Text style={styles.username}>{userCapitalized}</Text>
           <Button
-            title="Upload image"
+            title="Upload"
             buttonStyle={styles.button}
             titleStyle={{
               fontSize: 20,
-              color: "#0873ff"
+              color: "#fff",
             }}
             onPress={openGallery}
           />
@@ -105,7 +105,7 @@ const Profile = ({ navigation }) => {
             <Text
               style={{
                 fontSize: 20,
-                color: "#ff5252"
+                color: "#ff5252",
               }}
             >
               Logout
@@ -120,69 +120,63 @@ const Profile = ({ navigation }) => {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    justifyContent: "flex-start"
+    justifyContent: "flex-start",
   },
   title: {
     flex: 1,
-    maxHeight: 120,
-    justifyContent: "flex-start",
+    maxHeight: 100,
+    justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#05AC72"
+    backgroundColor: "#4ecca3",
   },
   titleText: {
     position: "relative",
-    marginTop: 70,
+    top: 15,
     fontSize: 30,
     color: "#fff",
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   mainWindow: {
-    backgroundColor: "#fff",
     flex: 1,
     position: "absolute",
     alignItems: "center",
-    top: 120,
+    top: 100,
     bottom: 0,
     left: 0,
-    right: 0
+    right: 0,
   },
   imageWrapper: {
     flex: 1,
     alignItems: "center",
-    marginTop: 30
+    marginTop: 30,
   },
   image: {
     width: 250,
     height: 250,
-    borderRadius: 250
+    borderRadius: 250,
   },
   username: {
     fontSize: 30,
-    marginTop: 30
+    marginTop: 30,
   },
   button: {
-    borderRadius: 40,
-    backgroundColor: "white",
-    paddingHorizontal: 30,
+    borderRadius: 10,
+    backgroundColor: "#2196f3",
+    paddingHorizontal: 60,
     marginTop: 40,
-    elevation: 5
+    elevation: 3,
   },
   lottie: {
     width: 100,
-    height: 100
+    height: 100,
   },
   logOutWrapper: {
-    borderRadius: 50,
     padding: 10,
     width: 185,
     marginTop: 35,
     justifyContent: "center",
     alignItems: "center",
-    elevation: 5,
-    backgroundColor: "white",
-    borderColor: "#ff5252",
-    borderWidth: 1
-  }
+  },
 });
 
 export default Profile;

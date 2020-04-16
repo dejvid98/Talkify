@@ -3,7 +3,7 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  ImageBackground
+  ImageBackground,
 } from "react-native";
 import LandingPhoto from "../../assets/Talkify-HomeScreen-V1.png";
 import firebase from "../../firebase";
@@ -11,7 +11,7 @@ import firebase from "../../firebase";
 const Landing = ({ navigation }) => {
   useEffect(() => {
     try {
-      firebase.auth().onAuthStateChanged(function(user) {
+      firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
           navigation.navigate("Home");
         } else {
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     height: "100%",
     flex: 1,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   buttonLog: {
     padding: 15,
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
     width: 240,
     position: "relative",
-    top: 50
+    top: 50,
   },
   buttonReg: {
     padding: 15,
@@ -72,22 +72,22 @@ const styles = StyleSheet.create({
     width: 240,
     position: "relative",
     top: 70,
-    elevation: 5
+    elevation: 5,
   },
   buttonTextReg: {
     color: "#00d1b2",
     textAlign: "center",
     paddingHorizontal: 40,
     fontSize: 20,
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   buttonTextLog: {
     color: "#fff",
     textAlign: "center",
     paddingHorizontal: 40,
     fontSize: 20,
-    fontWeight: "bold"
-  }
+    fontWeight: "bold",
+  },
 });
 
 export default Landing;

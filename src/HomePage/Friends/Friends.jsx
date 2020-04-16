@@ -49,7 +49,7 @@ const Friends = ({ navigation }) => {
             name="person-add"
             type="material"
             iconStyle={{
-              fontSize: 30,
+              fontSize: 25,
               color: "white",
               padding: 2,
               fontWeight: "bold",
@@ -91,12 +91,12 @@ const styles = StyleSheet.create({
   },
   chatIcon: {
     position: "absolute",
-    top: Dimensions.get("window").height - 110,
-    left: Dimensions.get("window").width - 94,
+    top: Dimensions.get("window").height - 100,
+    left: Dimensions.get("window").width - 80,
   },
   iconWrapper: {
     backgroundColor: "#4ecca3",
-    padding: 20,
+    padding: 15,
     borderRadius: 60,
   },
 });

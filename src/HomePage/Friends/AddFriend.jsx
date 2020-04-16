@@ -165,7 +165,7 @@ const Friends = ({ navigation }) => {
                 <Icon
                   name="add"
                   type="material"
-                  iconStyle={{ fontSize: 60, color: "white" }}
+                  iconStyle={{ fontSize: 40, color: "white" }}
                 />
               </TouchableOpacity>
             </View>
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
   },
   addNewFriend: {
     position: "relative",
-    fontSize: 30,
+    fontSize: 20,
     color: "rgba(0,0,0,0.5)",
     fontWeight: "bold",
     marginBottom: 30,

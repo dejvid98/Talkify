@@ -4,7 +4,7 @@ import {
   StyleSheet,
   ImageBackground,
   View,
-  Dimensions
+  Dimensions,
 } from "react-native";
 import LandingPhoto from "../../assets/Talkify-HomeScreen-V1.png";
 import { Input, Button } from "react-native-elements";
@@ -23,7 +23,7 @@ const Register = ({ navigation }) => {
 
   useEffect(() => {
     try {
-      firebase.auth().onAuthStateChanged(function(user) {
+      firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
           navigation.navigate("Home");
         } else {
@@ -70,11 +70,11 @@ const Register = ({ navigation }) => {
       await firebase
         .auth()
         .createUserWithEmailAndPassword(email.toLowerCase(), password)
-        .then(function(result) {
+        .then(function (result) {
           return result.user.updateProfile({
             displayName: userName.toLowerCase(),
             photoURL:
-              "https://pngimage.net/wp-content/uploads/2018/06/no-avatar-png-8.png"
+              "https://pngimage.net/wp-content/uploads/2018/06/no-avatar-png-8.png",
           });
         });
       await firebase
@@ -85,7 +85,7 @@ const Register = ({ navigation }) => {
           username: userName.toLowerCase(),
           email: email,
           photoURL:
-            "https://pngimage.net/wp-content/uploads/2018/06/no-avatar-png-8.png"
+            "https://pngimage.net/wp-content/uploads/2018/06/no-avatar-png-8.png",
         })
         .then(
           firebase
@@ -118,19 +118,19 @@ const Register = ({ navigation }) => {
 
         <Input
           inputContainerStyle={styles.input}
-          onChangeText={text => setUsername(text)}
+          onChangeText={(text) => setUsername(text)}
           value={userName}
           placeholder="Username"
           leftIconContainerStyle={styles.icon}
           leftIcon={{
             type: "font-awesome",
             name: "user",
-            color: "#808080"
+            color: "#808080",
           }}
         />
         <Input
           inputContainerStyle={styles.input}
-          onChangeText={text => setEmail(text)}
+          onChangeText={(text) => setEmail(text)}
           value={email}
           keyboardType="email-address"
           placeholder="E-mail"
@@ -138,11 +138,11 @@ const Register = ({ navigation }) => {
           leftIcon={{
             type: "font-awesome",
             name: "at",
-            color: "#808080"
+            color: "#808080",
           }}
         />
         <Input
-          onChangeText={text => setPassword(text)}
+          onChangeText={(text) => setPassword(text)}
           inputContainerStyle={styles.input}
           value={password}
           placeholder="Password"
@@ -151,11 +151,11 @@ const Register = ({ navigation }) => {
           leftIcon={{
             type: "font-awesome",
             name: "lock",
-            color: "#808080"
+            color: "#808080",
           }}
         />
         <Input
-          onChangeText={text => setConfirmPassword(text)}
+          onChangeText={(text) => setConfirmPassword(text)}
           inputContainerStyle={styles.input}
           value={confirmPassword}
           placeholder="Confirm Password"
@@ -164,7 +164,7 @@ const Register = ({ navigation }) => {
           leftIcon={{
             type: "font-awesome",
             name: "lock",
-            color: "#808080"
+            color: "#808080",
           }}
         />
         <Button
@@ -185,14 +185,14 @@ const styles = StyleSheet.create({
     height: "100%",
     flex: 1,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   button: {
     width: 150,
     borderRadius: 80,
     borderColor: "white",
     borderWidth: 2,
-    top: 30
+    top: 30,
   },
   input: {
     width: 240,
@@ -201,29 +201,29 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginTop: Dimensions.get("window").height < 700 ? 15 : 30,
     borderBottomColor: "rgba(0,0,0,0)",
-    elevation: 5
+    elevation: 5,
   },
   icon: {
-    marginRight: 10
+    marginRight: 10,
   },
   buttonWrapper: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    top: Dimensions.get("window").height > 1000 ? 140 : 100
+    top: Dimensions.get("window").height > 1000 ? 140 : 100,
   },
   errorWrapper: {
     backgroundColor: "#ff443b",
     borderRadius: 5,
-    margin: 5
+    margin: 5,
   },
   errorMsg: {
     color: "#fff",
     fontSize: 15,
     padding: 8,
     fontWeight: "bold",
-    paddingHorizontal: 20
-  }
+    paddingHorizontal: 20,
+  },
 });
 
 export default Register;

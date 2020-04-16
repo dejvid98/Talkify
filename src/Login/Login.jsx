@@ -1,20 +1,18 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Text, StyleSheet, ImageBackground, View } from "react-native";
 import LandingPhoto from "../../assets/Talkify-HomeScreen-V1.png";
 import { Input, Button } from "react-native-elements";
-import isEmail from "validator/lib/isEmail";
-import isEmpty from "validator/lib/isEmpty";
 import firebase from "../../firebase";
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isEmailError, setIsEmailError] = useState(false);
-  const [isPasswordError, setIsPasswordError] = useState(false);
+
+  const [isLoginError, setIsLoginError] = useState(false);
 
   useEffect(() => {
     try {
-      firebase.auth().onAuthStateChanged(function(user) {
+      firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
           navigation.navigate("Home");
         } else {
@@ -26,32 +24,17 @@ const Login = ({ navigation }) => {
     }
   }, []);
 
-  const handleErrors = () => {
-    if (!isEmail(email) || isEmpty(email)) {
-      setIsEmailError(true);
-      const time1 = setTimeout(() => {
-        setIsEmailError(false);
-      }, 3000);
-      return;
-    }
-
-    if (isEmpty(password) || password.length < 6) {
-      setIsPasswordError(true);
-      const time2 = setTimeout(() => {
-        setIsPasswordError(false);
-      }, 3000);
-      return;
-    }
-  };
-
   const login = async () => {
-    handleErrors();
     try {
       await firebase
         .auth()
         .signInWithEmailAndPassword(email.toLocaleLowerCase(), password);
     } catch (error) {
       console.log(error);
+      setIsLoginError(true);
+      setTimeout(() => {
+        setIsLoginError(false);
+      }, 3000);
     }
   };
 
@@ -59,20 +42,15 @@ const Login = ({ navigation }) => {
     <ImageBackground source={LandingPhoto} style={styles.wrapper}>
       <View style={styles.viewWrapper}>
         <View style={styles.buttonWrapper}>
-          {isEmailError ? (
+          {isLoginError ? (
             <View style={styles.errorWrapper}>
-              <Text style={styles.errorMsg}>Please enter valid email!</Text>
-            </View>
-          ) : null}
-          {isPasswordError ? (
-            <View style={styles.errorWrapper}>
-              <Text style={styles.errorMsg}>Please enter valid password!</Text>
+              <Text style={styles.errorMsg}>Invalid email or password</Text>
             </View>
           ) : null}
 
           <Input
             inputContainerStyle={styles.input}
-            onChangeText={text => setEmail(text)}
+            onChangeText={(text) => setEmail(text)}
             value={email}
             keyboardType="email-address"
             placeholder="E-mail"
@@ -80,11 +58,11 @@ const Login = ({ navigation }) => {
             leftIcon={{
               type: "font-awesome",
               name: "at",
-              color: "#808080"
+              color: "#808080",
             }}
           />
           <Input
-            onChangeText={text => setPassword(text)}
+            onChangeText={(text) => setPassword(text)}
             inputContainerStyle={styles.input}
             value={password}
             placeholder="Password"
@@ -93,7 +71,7 @@ const Login = ({ navigation }) => {
             leftIcon={{
               type: "font-awesome",
               name: "lock",
-              color: "#808080"
+              color: "#808080",
             }}
           />
           <Button
@@ -115,19 +93,19 @@ const styles = StyleSheet.create({
     height: "100%",
     flex: 1,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   viewWrapper: {
     flex: 1,
     flexDirection: "column",
-    top: 30
+    top: 30,
   },
   button: {
     top: 70,
     width: 150,
     borderRadius: 80,
     borderColor: "white",
-    borderWidth: 2
+    borderWidth: 2,
   },
   input: {
     width: 240,
@@ -137,28 +115,28 @@ const styles = StyleSheet.create({
     margin: 10,
     top: 40,
     borderBottomColor: "rgba(0,0,0,0)",
-    elevation: 5
+    elevation: 5,
   },
   icon: {
-    marginRight: 10
+    marginRight: 10,
   },
   buttonWrapper: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   errorWrapper: {
     backgroundColor: "#ff443b",
     borderRadius: 5,
-    top: 30
+    top: 30,
   },
   errorMsg: {
     color: "#fff",
     fontSize: 15,
     padding: 8,
     fontWeight: "bold",
-    paddingHorizontal: 20
-  }
+    paddingHorizontal: 20,
+  },
 });
 
 export default Login;

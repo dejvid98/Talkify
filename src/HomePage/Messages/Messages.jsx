@@ -41,16 +41,6 @@ const Home = ({ navigation }) => {
     }, [])
   );
 
-  const findSender = (text) => {
-    setSenderSearch(text);
-
-    const filteredSenders = senders.filter((sender) =>
-      sender.senderName.startsWith(senderSearch.toLowerCase())
-    );
-
-    setSenders(filteredSenders);
-  };
-
   // Checks to see with whom user has active chats with
   const getSenders = async () => {
     try {
@@ -134,13 +124,6 @@ const Home = ({ navigation }) => {
           }}
         >
           <Text style={styles.titleText}>Messages</Text>
-          {isSearching ? (
-            <TextInput
-              style={styles.searchInput}
-              value={senderSearch}
-              onChangeText={(text) => findSender(text)}
-            />
-          ) : null}
 
           <View style={styles.serachIconWrapper}>
             <Icon
@@ -321,10 +304,11 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
     top: 15,
-    flex: 5,
     fontFamily: "Lato-Regular",
     letterSpacing: 1,
-    right: 25,
+    justifyContent: "center",
+    alignItems: "center",
+    left: 60,
   },
   senderAvatar: {
     width: 50,
@@ -334,10 +318,8 @@ const styles = StyleSheet.create({
   },
   messageWrapper: {
     flexDirection: "row",
-    borderBottomColor: "rgba(0,0,0,0.08)",
-    borderBottomWidth: 0.6,
     width: Dimensions.get("window").width,
-    paddingBottom: 15,
+    paddingBottom: 10,
   },
   chatWrapper: {
     flexDirection: "column",
@@ -347,7 +329,7 @@ const styles = StyleSheet.create({
   avatarWrapper: {
     height: 50,
     width: 50,
-    marginTop: 15,
+    marginTop: 10,
     marginLeft: 10,
   },
   senderWrapper: {
@@ -355,6 +337,10 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     left: 20,
     flex: 1,
+    height: 75,
+    paddingBottom: 15,
+    borderBottomColor: "rgba(0,0,0,0.08)",
+    borderBottomWidth: 0.6,
   },
   sender: {
     fontSize: 20,
@@ -373,8 +359,11 @@ const styles = StyleSheet.create({
   },
   iconWrapper: {
     backgroundColor: "#4ecca3",
-    padding: 15,
+    padding: 12,
     borderRadius: 60,
+    position: "absolute",
+    bottom: 2,
+    right: 6,
   },
   spinnerTextStyle: {
     color: "#FFF",
@@ -396,11 +385,11 @@ const styles = StyleSheet.create({
     width: 120,
     color: "white",
     fontSize: 18,
-    padding: -10,
   },
   serachIconWrapper: {
     top: 20,
     flex: 1,
+    left: 55,
   },
 });
 
