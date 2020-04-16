@@ -4,7 +4,7 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Dimensions
+  Dimensions,
 } from "react-native";
 import { Icon } from "react-native-elements";
 import FriendList from "./FriendList";
@@ -52,7 +52,7 @@ const Friends = ({ navigation }) => {
               fontSize: 30,
               color: "white",
               padding: 2,
-              fontWeight: "bold"
+              fontWeight: "bold",
             }}
           />
         </TouchableOpacity>
@@ -65,40 +65,40 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     justifyContent: "flex-start",
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
   },
   title: {
     flex: 1,
-    maxHeight: 120,
+    maxHeight: 100,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#05AC72",
-    flexDirection: "row"
+    backgroundColor: "#4ecca3",
+    flexDirection: "row",
   },
   titleText: {
     position: "relative",
     fontSize: 30,
     color: "#fff",
     fontWeight: "bold",
-    top: 30,
+    top: 15,
     right: 25,
-    letterSpacing: 2
+    letterSpacing: 2,
   },
 
   icon: {
     backgroundColor: "rgba(0,0,0,0)",
-    top: 28
+    top: 28,
   },
   chatIcon: {
     position: "absolute",
     top: Dimensions.get("window").height - 110,
-    left: Dimensions.get("window").width - 94
+    left: Dimensions.get("window").width - 94,
   },
   iconWrapper: {
-    backgroundColor: "#25d366",
+    backgroundColor: "#4ecca3",
     padding: 20,
-    borderRadius: 60
-  }
+    borderRadius: 60,
+  },
 });
 
 export default Friends;

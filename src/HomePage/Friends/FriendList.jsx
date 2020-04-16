@@ -5,7 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
-  Image
+  Image,
 } from "react-native";
 import firebase from "../../../firebase";
 import { AppContext } from "../../../Context";
@@ -20,11 +20,11 @@ const FriendList = () => {
   const db = firebase.firestore();
   let unsubscribe;
 
-  const capitalizedWord = word => {
+  const capitalizedWord = (word) => {
     return word.charAt(0).toUpperCase() + word.substring(1);
   };
 
-  const openChat = friend => {
+  const openChat = (friend) => {
     setTarget(friend);
     navigation.navigate("SingleChatWindow");
   };
@@ -34,14 +34,13 @@ const FriendList = () => {
       .collection("friends")
       .doc(currentUser.displayName)
       .collection("friendList")
-      .onSnapshot(querySnapshot => {
+      .onSnapshot((querySnapshot) => {
         setFriends([]);
-        querySnapshot.forEach(sender => {
-          setFriends(oldArr => [...oldArr, sender.data()]);
+        querySnapshot.forEach((sender) => {
+          setFriends((oldArr) => [...oldArr, sender.data()]);
         });
       });
   };
-  
 
   useEffect(
     () => {
@@ -90,35 +89,36 @@ const FriendList = () => {
 const styles = StyleSheet.create({
   friendWrapper: {
     flexDirection: "row",
-    borderBottomColor: "rgba(0,0,0,0.2)",
+    borderBottomColor: "rgba(0,0,0,0.08)",
     borderBottomWidth: 0.6,
     width: Dimensions.get("window").width,
-    paddingBottom: 3
+    paddingBottom: 3,
   },
   friendAvatar: {
-    width: 80,
-    height: 80,
+    width: 50,
+    height: 50,
     borderRadius: 80,
-    margin: 5
+    margin: 5,
   },
   friendNameWrapper: {
     justifyContent: "center",
     alignItems: "center",
-    flex: 1
+    flex: 1,
   },
   friendName: {
-    fontSize: 30
+    fontSize: 25,
+    right: 20,
   },
   emptyFriendListWrapper: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: Dimensions.get("window").height * 0.3
+    marginTop: Dimensions.get("window").height * 0.3,
   },
   emptyFriendList: {
     fontSize: 20,
-    color: "rgba(0,0,0,0.4)"
-  }
+    color: "rgba(0,0,0,0.4)",
+  },
 });
 
 export default FriendList;

@@ -4,13 +4,11 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Dimensions,
-  TextInput
+  TextInput,
 } from "react-native";
 import { Icon } from "react-native-elements";
 import firebase from "../../../firebase";
 import { AppContext } from "../../../Context";
-import { useFocusEffect } from "@react-navigation/native";
 
 const Friends = ({ navigation }) => {
   const [username, setUsername] = useState("");
@@ -45,14 +43,14 @@ const Friends = ({ navigation }) => {
       .collection("users")
       .doc(username.toLowerCase())
       .get()
-      .then(function(doc) {
+      .then(function (doc) {
         if (!doc.exists) {
           handleError();
           setIsLoading(false);
           return;
         }
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log("Error getting document:", error);
         setIsLoading(false);
         return;
@@ -62,7 +60,7 @@ const Friends = ({ navigation }) => {
       await storageRef
         .child("avatars/" + username.toLowerCase().trim())
         .getDownloadURL()
-        .then(function(url) {
+        .then(function (url) {
           receiverPhoto = url;
         });
     } catch (error) {
@@ -71,7 +69,7 @@ const Friends = ({ navigation }) => {
           .collection("users")
           .doc(username.toLowerCase().trim())
           .get()
-          .then(doc => {
+          .then((doc) => {
             receiverPhoto = doc.data().photoURL;
           });
       } catch (error) {
@@ -88,7 +86,7 @@ const Friends = ({ navigation }) => {
       .doc(currentUser.displayName)
       .set({
         friendName: currentUser.displayName,
-        friendPhoto: currentUser.photoURL
+        friendPhoto: currentUser.photoURL,
       });
 
     await db
@@ -98,7 +96,7 @@ const Friends = ({ navigation }) => {
       .doc(username.toLowerCase().trim())
       .set({
         friendName: username.toLowerCase().trim(),
-        friendPhoto: receiverPhoto
+        friendPhoto: receiverPhoto,
       });
 
     setIsLoading(false);
@@ -160,7 +158,7 @@ const Friends = ({ navigation }) => {
               style={styles.inputTo}
               placeholder="Username"
               value={username}
-              onChangeText={text => setUsername(text)}
+              onChangeText={(text) => setUsername(text)}
             />
             <View style={styles.chatIcon}>
               <TouchableOpacity onPress={handleAdd}>
@@ -184,111 +182,112 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    bottom: 70
+    bottom: 70,
   },
 
   wrapper: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
 
   addWrapper: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    left: 30
+    left: 30,
   },
   addNewFriend: {
     position: "relative",
     fontSize: 30,
     color: "rgba(0,0,0,0.5)",
     fontWeight: "bold",
-    marginBottom: 30
+    marginBottom: 30,
   },
   inputWrapper: {
-    height: 300
+    height: 300,
   },
   inputTo: {
     borderColor: "rgba(0,0,0,0.3)",
     borderWidth: 1,
     borderRadius: 15,
     padding: 10,
-    width: 200
+    width: 200,
   },
   inputText: {
     borderColor: "rgba(0,0,0,0.3)",
     borderWidth: 1,
     borderRadius: 15,
-    padding: 10
+    padding: 10,
   },
 
   successWrapper: {
     backgroundColor: "#21db73",
     borderRadius: 5,
-    marginBottom: 20
+    marginBottom: 20,
   },
   success: {
     color: "#fff",
     fontSize: 20,
     padding: 8,
     fontWeight: "bold",
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   errorWrapper: {
     backgroundColor: "#ff443b",
     borderRadius: 5,
-    marginBottom: 25
+    marginBottom: 25,
   },
   errorMsg: {
     color: "#fff",
     fontSize: 20,
     padding: 8,
     fontWeight: "bold",
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   chatIcon: {
-    backgroundColor: "#25d366",
+    backgroundColor: "#4ecca3",
     borderRadius: 60,
     width: 60,
     height: 60,
     justifyContent: "center",
     alignItems: "center",
-    right: 30
+    right: 30,
   },
 
   spinnerTextStyle: {
     color: "white",
-    fontSize: 30
+    fontSize: 30,
   },
 
   title: {
     flex: 1,
-    maxHeight: 120,
+    maxHeight: 100,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#05AC72",
-    flexDirection: "row"
+    backgroundColor: "#4ecca3",
+    flexDirection: "row",
   },
-  
+
   titleText: {
     position: "relative",
     fontSize: 30,
     color: "#fff",
     fontWeight: "bold",
-    top: 30,
-    right: 25
+    top: 15,
+    right: 25,
   },
 
   icon: {
     backgroundColor: "rgba(0,0,0,0)",
-    top: 28
+    top: 15,
+    left: 15,
   },
 
   iconWrapper: {
     backgroundColor: "#25d366",
-    borderRadius: 60
-  }
+    borderRadius: 60,
+  },
 });
 
 export default Friends;
