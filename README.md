@@ -2,6 +2,7 @@
 
 ##### _Chat android app made with React Native_
 
+<img src="https://i.imgur.com/kkatGW5.jpg" alt="landing"/>
 
 # [Download the APK ](https://drive.google.com/open?id=1b06TA3SMqdl7jnMtuIgoMEgGtfuyBoab)
 
@@ -36,4 +37,4 @@
 
 | Landing                                                                | Register                                                                | Profile                                                                | Messages                                                                | Chat                                                                |
 | ---------------------------------------------------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| <img src="https://i.imgur.com/BwrocBu.jpg" alt="landing" width="190"/> | <img src="https://i.imgur.com/9x3OJdK.jpg" alt="register" width="190"/> | <img src="https://i.imgur.com/zFjdS4W.jpg" alt="profile" width="190"/> | <img src="https://i.imgur.com/3J0V2is.jpg" alt="messages" width="190"/> | <img src="https://i.imgur.com/NCOBmSt.jpg" alt="chat" width="190"/> |
+| <img src="https://i.imgur.com/BwrocBu.jpg" alt="landing" width="190"/> | <img src="https://i.imgur.com/9x3OJdK.jpg" alt="register" width="190"/> | <img src="https://i.imgur.com/UgMDYwn.jpg" alt="profile" width="190"/> | <img src="https://i.imgur.com/UhjTpXm.jpg" alt="messages" width="190"/> | <img src="https://i.imgur.com/ZFXtChj.jpg" alt="chat" width="190"/> |
